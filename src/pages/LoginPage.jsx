@@ -1,22 +1,57 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, CheckCircle, Zap, Map, Brain, FileText } from 'lucide-react';
+import {
+  Eye, EyeOff, ArrowRight, ArrowLeft, Shield, Map, Brain,
+  FileText, Zap, Lock, Mail, CheckCircle2, Building2
+} from 'lucide-react';
 import { useAuthStore } from '../store/store';
 import SMKCLogo from '../components/SMKCLogo';
 import toast from 'react-hot-toast';
 
 const DEMO_ACCOUNTS = [
-  { email: 'citizen@demo.com',      role: 'Citizen',       color: '#14b8a6', icon: '👤', desc: 'Report & track complaints' },
-  { email: 'officer@smkc.demo',     role: 'Field Officer', color: '#1d4ed8', icon: '👮', desc: 'Verify & act on cases' },
-  { email: 'supervisor@smkc.demo',  role: 'Supervisor',    color: '#7c3aed', icon: '🏛️', desc: 'Assign & issue notices' },
-  { email: 'admin@smkc.demo',       role: 'Administrator', color: '#dc2626', icon: '⚙️', desc: 'Full platform control' },
+  {
+    email: 'citizen@demo.com',
+    role: 'Citizen',
+    color: '#059669',
+    bgColor: '#ecfdf5',
+    borderColor: '#a7f3d0',
+    icon: '👤',
+    desc: 'Report violations & track complaint progress',
+  },
+  {
+    email: 'officer@smkc.demo',
+    role: 'Field Officer',
+    color: '#2563eb',
+    bgColor: '#eff6ff',
+    borderColor: '#bfdbfe',
+    icon: '🛡️',
+    desc: 'Inspect on-site, verify evidence & upload proof',
+  },
+  {
+    email: 'supervisor@smkc.demo',
+    role: 'Supervisor',
+    color: '#7c3aed',
+    bgColor: '#f5f3ff',
+    borderColor: '#ddd6fe',
+    icon: '🏛️',
+    desc: 'Assign field squads & issue compliance notices',
+  },
+  {
+    email: 'admin@smkc.demo',
+    role: 'Administrator',
+    color: '#e11d48',
+    bgColor: '#fff1f2',
+    borderColor: '#fecdd3',
+    icon: '⚙️',
+    desc: 'Full municipal system control, GIS & audit logs',
+  },
 ];
 
 const FEATURES = [
-  { icon: Brain,    label: 'AI-Powered',    desc: 'YOLO v8 detection' },
-  { icon: Map,      label: 'GIS Mapping',   desc: 'Real-time locations' },
-  { icon: FileText, label: 'Digital Notices', desc: 'End-to-end enforcement' },
-  { icon: Zap,      label: 'Case Intelligence', desc: 'Historical data' },
+  { icon: Brain, label: 'AI Vision Pipeline', desc: 'Automated hoarding & encroachment detection' },
+  { icon: Map, label: 'GIS Spatial Mapping', desc: 'Ward-level coordinates & density hotspots' },
+  { icon: FileText, label: 'Digital Due Process', desc: 'Tamper-evident legal notices with deadlines' },
+  { icon: Zap, label: 'Enforcement Audit', desc: 'Complete verifiable before/after evidence trails' },
 ];
 
 export default function LoginPage() {
@@ -64,208 +99,308 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #070e1a 0%, #0a1628 45%, #0f2240 100%)' }}>
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
 
-      {/* ── Left Panel ── */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden">
-        {/* Grid bg */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-        {/* Glow blobs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(29,78,216,0.12) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(13,148,136,0.1) 0%, transparent 70%)' }} />
-
-        {/* Top — Brand */}
-        <div className="relative z-10 animate-fade-in">
-          <div className="flex items-center gap-4 mb-10">
-            <SMKCLogo size={60} className="ring-2 ring-white/20 glow-pulse" />
-            <div>
-              <div className="text-xs font-semibold text-teal-400 uppercase tracking-widest mb-0.5">SMKC · Nagar-Netra</div>
-              <h1 className="text-3xl font-bold text-white font-display tracking-wide">NAGAR-NETRA</h1>
-              <p className="text-slate-400 text-sm font-medium">AI + GIS Powered Civic Enforcement</p>
-            </div>
+      {/* Official Government Top Bar */}
+      <div className="bg-slate-900 text-slate-300 text-[11px] py-1.5 px-4 sm:px-6 lg:px-8 border-b border-slate-800 flex-shrink-0 z-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+            <span className="font-medium text-slate-200 truncate">
+              Government of Maharashtra · Sangli-Miraj-Kupwad Municipal Corporation (SMKC)
+            </span>
           </div>
-
-          <p className="text-2xl font-semibold text-white mb-3 leading-tight font-display">
-            Detect. Verify.<br />Act. Resolve.
-          </p>
-          <p className="text-slate-400 text-base leading-relaxed mb-10 max-w-sm">
-            SMKC's unified platform for managing illegal hoardings, encroachments and civic violations
-            through AI detection, GIS mapping and digital enforcement workflows.
-          </p>
-
-          {/* Feature grid */}
-          <div className="grid grid-cols-2 gap-3 stagger-children">
-            {FEATURES.map((f) => (
-              <div key={f.label}
-                className="glass-card p-4 group hover:border-white/20 transition-all duration-300">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(13,148,136,0.15)' }}>
-                    <f.icon size={15} className="text-teal-400" />
-                  </div>
-                  <div>
-                    <div className="text-white text-sm font-semibold">{f.label}</div>
-                    <div className="text-slate-500 text-xs">{f.desc}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom — Mini dashboard preview */}
-        <div className="relative z-10 animate-slide-up delay-400">
-          <div className="glass-card p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-              <span className="text-slate-400 text-xs font-mono">Platform Status · Live</span>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { val: '20', label: 'Active Cases', color: '#60a5fa' },
-                { val: '94%', label: 'AI Accuracy', color: '#2dd4bf' },
-                { val: '8', label: 'Resolved', color: '#86efac' },
-              ].map(({ val, label, color }) => (
-                <div key={label} className="text-center">
-                  <div className="text-xl font-bold font-display" style={{ color }}>{val}</div>
-                  <div className="text-slate-500 text-xs">{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-4 text-slate-500 text-xs text-center">
-            Sangli-Miraj-Kupwad Municipal Corporation · Official Portal v2.0
+          <div className="hidden sm:flex items-center gap-4 text-slate-400 text-[10px] flex-shrink-0 font-medium">
+            <span>Citizen Helpline: <strong className="text-white font-mono">1800-233-5599</strong></span>
+            <span className="text-slate-700">|</span>
+            <span className="text-emerald-400 font-mono flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              Portal Status: Online
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ── Right Panel — Login Form ── */}
-      <div className="w-full lg:w-[460px] flex flex-col justify-center px-8 py-12 relative"
-        style={{ background: 'rgba(255,255,255,0.97)', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="max-w-sm mx-auto w-full">
+      {/* Main Split Screen Container */}
+      <div className="flex-1 flex flex-col lg:flex-row relative">
 
-          {/* Mobile brand */}
-          <div className="lg:hidden flex items-center gap-3 mb-8 animate-fade-in">
-            <SMKCLogo size={40} className="ring-1 ring-white/10" />
-            <div>
-              <div className="font-bold text-white font-display">NAGAR-NETRA</div>
-              <div className="text-teal-400 text-xs">SMKC Civic Enforcement</div>
-            </div>
-          </div>
+        {/* ── Left Panel: Civic Platform Showcase (Light Theme) ── */}
+        <div className="hidden lg:flex flex-1 flex-col justify-between p-10 xl:p-14 relative bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/60 border-r border-slate-200/80 overflow-hidden">
+          
+          {/* Subtle Grid Vectors Background */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-40"
+            style={{
+              backgroundImage: `radial-gradient(circle at 50% 20%, rgba(37,99,235,0.06) 0%, transparent 70%),
+                                linear-gradient(rgba(148,163,184,0.12) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(148,163,184,0.12) 1px, transparent 1px)`,
+              backgroundSize: '100% 100%, 36px 36px, 36px 36px',
+            }}
+          />
 
-          {/* Header */}
-          <div className="animate-fade-in mb-7">
-            <h2 className="text-2xl font-bold text-slate-900 mb-1 font-display">Sign In</h2>
-            <p className="text-slate-500 text-sm">Access your NAGAR-NETRA dashboard</p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-4 animate-fade-in delay-100">
-            <div>
-              <label className="form-label">Email Address</label>
-              <input
-                type="email"
-                className="form-input"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="officer@smkc.demo"
-                required
-              />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="form-label mb-0">Password</label>
-                <Link to="/forgot-password" className="text-xs text-teal-400 hover:text-teal-300 transition-colors">Forgot password?</Link>
+          {/* Top Brand & Title */}
+          <div className="relative z-10 space-y-6 max-w-lg">
+            <Link to="/" className="inline-flex items-center gap-3 group">
+              <div className="p-1.5 rounded-full bg-white ring-1 ring-slate-200 shadow-xs group-hover:ring-blue-400 transition-all">
+                <SMKCLogo size={42} />
               </div>
-              <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  className="form-input pr-10"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary w-full justify-center py-3 text-base"
-              style={{ width: '100%' }}>
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/>
-                    <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                  </svg>
-                  Signing in...
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-display font-extrabold text-2xl text-slate-900 tracking-tight">
+                    NAGAR-NETRA
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100/80 text-blue-800 border border-blue-200">
+                    SMKC
+                  </span>
+                </div>
+                <span className="text-xs text-slate-500 font-medium tracking-wide">
+                  Civic Enforcement & Surveillance System
                 </span>
-              ) : (
-                <><span>Sign In</span><ArrowRight size={16} /></>
-              )}
-            </button>
-          </form>
+              </div>
+            </Link>
 
-          {/* Register link */}
-          <div className="mt-4 text-center animate-fade-in">
-            <p className="text-slate-400 text-sm">
-              New citizen?{' '}
-              <Link to="/register" className="text-teal-400 hover:text-teal-300 font-semibold transition-colors">Create an account</Link>
-            </p>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="mt-7 animate-fade-in delay-200">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-slate-200" />
-              <span className="text-slate-400 text-xs font-semibold tracking-wide">DEMO ACCOUNTS</span>
-              <div className="flex-1 h-px bg-slate-200" />
+            <div className="space-y-3 pt-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+                <Building2 size={12} className="text-blue-600" />
+                <span>MUNICIPAL ENFORCEMENT PORTAL</span>
+              </div>
+              <h2 className="font-display font-bold text-3xl xl:text-4xl text-slate-900 leading-tight">
+                Digital Eyes.<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-teal-600">
+                  Verified Action.
+                </span>
+              </h2>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Secure access for citizens, field verification squads, supervisory officers,
+                and corporation administrators to manage illegal hoardings and public encroachments.
+              </p>
             </div>
 
-            <div className="space-y-2">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.email}
-                  onClick={() => quickLogin(acc)}
-                  className="role-card w-full text-left"
-                  style={{ '--role-color': acc.color }}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">{acc.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-slate-800">{acc.email}</div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs font-bold" style={{ color: acc.color }}>{acc.role}</span>
-                        <span className="text-slate-400 text-xs">· {acc.desc}</span>
-                      </div>
-                    </div>
-                    <ArrowRight size={14} className="text-slate-300 flex-shrink-0 transition-all group-hover:text-slate-500 group-hover:translate-x-1" />
+            {/* Feature Cards Grid */}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              {FEATURES.map((f) => (
+                <div
+                  key={f.label}
+                  className="bg-white/80 backdrop-blur-xs rounded-xl p-3.5 border border-slate-200 shadow-2xs hover:border-blue-300 hover:shadow-xs transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center mb-2.5">
+                    <f.icon size={16} className="text-blue-600" />
                   </div>
-                </button>
+                  <div className="text-slate-900 text-xs font-bold font-display">{f.label}</div>
+                  <div className="text-slate-500 text-[11px] leading-snug mt-0.5">{f.desc}</div>
+                </div>
               ))}
             </div>
+          </div>
 
-            <div className="mt-3 p-3 rounded-lg text-xs text-slate-500 text-center"
-              style={{ background: '#f8fafc', border: '1px solid #f1f5f9' }}>
-              💡 Click any account above for instant access · Password: <span className="font-mono font-semibold">demo1234</span>
+          {/* Bottom Live Metrics Showcase */}
+          <div className="relative z-10 pt-6">
+            <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-md shadow-slate-200/50 max-w-lg">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="font-bold text-slate-700">Live Enforcement Grid</span>
+                </div>
+                <span className="font-mono text-[11px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                  SANGLI · MIRAJ · KUPWAD
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="font-display font-extrabold text-xl text-blue-700">18</div>
+                  <div className="text-[11px] text-slate-500">Active Cases</div>
+                </div>
+                <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="font-display font-extrabold text-xl text-teal-600">94%</div>
+                  <div className="text-[11px] text-slate-500">AI Confidence</div>
+                </div>
+                <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="font-display font-extrabold text-xl text-emerald-600">42</div>
+                  <div className="text-[11px] text-slate-500">Resolved</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-slate-500 mt-4 flex items-center justify-between max-w-lg">
+              <span>© 2026 NAGAR-NETRA · SMKC</span>
+              <span>Official Civic Portal v2.0</span>
             </div>
           </div>
+        </div>
 
-          <div className="mt-6 text-center animate-fade-in delay-300">
-            <Link to="/" className="text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors">
-              ← Back to Home
-            </Link>
+        {/* ── Right Panel: Sign In Form & One-Click Role Access ── */}
+        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col justify-center px-6 sm:px-10 lg:px-12 py-10 bg-white flex-shrink-0">
+          <div className="max-w-sm sm:max-w-md mx-auto w-full space-y-6">
+
+            {/* Mobile Brand Banner (< lg) */}
+            <div className="lg:hidden flex items-center justify-between pb-4 border-b border-slate-100">
+              <Link to="/" className="flex items-center gap-3">
+                <SMKCLogo size={36} />
+                <div>
+                  <div className="font-display font-extrabold text-lg text-slate-900">NAGAR-NETRA</div>
+                  <div className="text-[11px] text-slate-500">SMKC Civic Enforcement</div>
+                </div>
+              </Link>
+              <Link to="/" className="text-xs font-semibold text-blue-600 flex items-center gap-1">
+                <ArrowLeft size={13} /> Home
+              </Link>
+            </div>
+
+            {/* Header */}
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 mb-2">
+                <Shield size={12} className="text-blue-600" />
+                <span>Authorized Sign In</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+                Welcome Back
+              </h2>
+              <p className="text-slate-500 text-xs sm:text-sm mt-1">
+                Sign in with your registered account or use 1-click role access below.
+              </p>
+            </div>
+
+            {/* Standard Login Form */}
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Email Address / Username
+                </label>
+                <div className="relative">
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="email"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-3 focus:ring-blue-100 transition-all placeholder:text-slate-400"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="officer@smkc.demo"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Password
+                  </label>
+                  <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-3 focus:ring-blue-100 transition-all placeholder:text-slate-400"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    aria-label={showPass ? 'Hide password' : 'Show password'}>
+                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-70">
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Authenticating...
+                  </span>
+                ) : (
+                  <>
+                    <span>Sign In to Portal</span>
+                    <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Register link */}
+            <div className="text-center text-xs text-slate-500">
+              New citizen or reporter?{' '}
+              <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors">
+                Register an account
+              </Link>
+            </div>
+
+            {/* 1-Click Role Access (Demo Accounts for Evaluators) */}
+            <div className="pt-2">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-1 h-px bg-slate-200" />
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  One-Click Role Access
+                </span>
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-2">
+                {DEMO_ACCOUNTS.map((acc) => {
+                  const isCurrent = activeRole === acc.role;
+                  return (
+                    <button
+                      key={acc.email}
+                      type="button"
+                      onClick={() => quickLogin(acc)}
+                      className="w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between group cursor-pointer hover:shadow-xs"
+                      style={{
+                        backgroundColor: isCurrent ? acc.bgColor : '#ffffff',
+                        borderColor: isCurrent ? acc.color : '#e2e8f0',
+                      }}>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-lg flex-shrink-0">{acc.icon}</span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-900">{acc.role}</span>
+                            <span
+                              className="text-[10px] font-semibold px-1.5 py-0.2 rounded"
+                              style={{ backgroundColor: acc.bgColor, color: acc.color, border: `1px solid ${acc.borderColor}` }}>
+                              Instant Demo
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 truncate">{acc.desc}</p>
+                        </div>
+                      </div>
+                      <ArrowRight
+                        size={14}
+                        className="text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0 ml-2"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500 text-center flex items-center justify-center gap-1.5">
+                <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                <span>
+                  Click any role for instant login · Password: <strong className="font-mono text-slate-700">demo1234</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Back to Home Link */}
+            <div className="text-center pt-1">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-700 transition-colors">
+                <ArrowLeft size={13} /> Return to NAGAR-NETRA Homepage
+              </Link>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
   );
