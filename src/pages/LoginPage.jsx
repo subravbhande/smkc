@@ -136,8 +136,8 @@ export default function LoginPage() {
               ))}
             </div>
           </div>
-          <div className="mt-4 text-slate-600 text-xs text-center">
-            Sangli-Miraj-Kupwad Municipal Corporation · Prototype v1.0
+          <div className="mt-4 text-slate-500 text-xs text-center">
+            Sangli-Miraj-Kupwad Municipal Corporation · Official Portal v2.0
           </div>
         </div>
       </div>

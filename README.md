@@ -1,16 +1,56 @@
-# React + Vite
+# 🏛️ NAGAR-NETRA (नगर-नेत्र)
+### *AI & GIS-Powered Civic Enforcement & Geo-Evidence Tracking Platform*
+**Sangli-Miraj-Kupwad Municipal Corporation (SMKC)**
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> **"Digital Eyes. Verified Action."**  
+> AI + GIS powered civic enforcement for a cleaner, safer, and better-managed city.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🏆 Smart India Hackathon (SIH) Documentation
+The complete, official SIH pitch deck slides and technical documentation report have been compiled in:
+👉 **[SIH_DOCUMENTATION.md](file:///c:/Users/subra/OneDrive/Desktop/finance%20tracker%20project/smkc/SIH_DOCUMENTATION.md)**
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Key Features
 
-## Expanding the Oxlint configuration
+1. **Public Citizen Portal (`/`):**
+   - High-fidelity civic portal with official SMKC branding.
+   - Quick 60-second violation reporting with mandatory mobile verification.
+   - Live GPS auto-detection & Leaflet map pin placement.
+   - Real-time complaint tracking with stage-by-stage visual timeline.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+2. **WhatsApp Civic Bot Simulator (`/admin/whatsapp-simulator`):**
+   - End-to-end simulated WhatsApp chatbot for zero-friction citizen reporting.
+   - Instant image and GPS coordinate intake with instant ticket response.
+
+3. **Multi-Role Municipal Dashboards:**
+   - **Admin (`/admin`):** Ward heatmaps, violation distribution, SLA breach monitoring, and audit log.
+   - **Supervisor (`/supervisor`):** Queue triage, field squad allocation, and workload balancing.
+   - **Field Officer (`/officer`):** Mobile route navigation, site inspection, and mandatory "Before & After" photo resolution.
+
+---
+
+## 💻 Tech Stack
+- **Frontend:** React 19, Vite, React Router DOM v6
+- **GIS & Maps:** Leaflet.js, OpenStreetMap
+- **Styling:** Custom Vanilla CSS & Civic Design Tokens
+- **Icons:** Lucide React
+
+---
+
+## 🏃 Getting Started
+
+```bash
+# Navigate to smkc folder
+cd smkc
+
+# Install packages
+npm install
+
+# Run local development server
+npm run dev
+```
+
+Visit `http://localhost:5173` to explore the live application.

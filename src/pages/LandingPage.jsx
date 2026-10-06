@@ -198,132 +198,168 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 4: PREMIUM STICKY NAVBAR
+          SECTION 4: PREMIUM STICKY NAVBAR & CIVIC HEADER
           ═══════════════════════════════════════════════════════════════ */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#0a1628]/95 backdrop-blur-md border-b border-slate-700/60 shadow-lg py-3'
-            : 'bg-[#0a1628]/85 backdrop-blur-sm border-b border-slate-800/80 py-4'
-        }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Left: Brand + Official SMKC Subtitle */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="p-1 rounded-full bg-white/10 ring-1 ring-white/20 group-hover:ring-teal-400 transition-all">
-                <SMKCLogo size={36} />
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-extrabold text-xl text-white tracking-tight">
-                    NAGAR-NETRA
-                  </span>
-                  <span className="hidden sm:inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                    SMKC
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-300 font-medium tracking-wide">
-                  SMKC Civic Intelligence Platform
-                </span>
-              </div>
-            </Link>
-
-            {/* Middle: Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
-              <a href="#hero" className="hover:text-white transition-colors">Home</a>
-              <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
-              <a href="#features" className="hover:text-white transition-colors">Features</a>
-              <a href="#gis-intelligence" className="hover:text-white transition-colors">GIS Intelligence</a>
-              <a href="#responsible-ai" className="hover:text-white transition-colors">Responsible AI</a>
-              <a href="#about" className="hover:text-white transition-colors">About</a>
+      <header className="fixed top-0 left-0 right-0 z-50">
+        {/* Official Government Strip */}
+        <div className="bg-slate-900 text-slate-300 text-[11px] py-1 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+              <span className="font-medium text-slate-200 truncate">
+                Government of Maharashtra · Sangli-Miraj-Kupwad Municipal Corporation (SMKC)
+              </span>
             </div>
-
-            {/* Right: Action Buttons */}
-            <div className="hidden sm:flex items-center gap-3">
-              <button
-                onClick={() => navigate('/track')}
-                className="px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-200 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all flex items-center gap-1.5">
-                <Search size={14} className="text-teal-400" /> Track Complaint
-              </button>
-              <button
-                onClick={() => navigate('/report')}
-                className="px-4 py-2 text-xs font-bold rounded-lg text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-md shadow-teal-900/30 transition-all flex items-center gap-1.5">
-                <Camera size={14} /> Report Violation
-              </button>
-              <button
-                onClick={() => navigate('/login')}
-                className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-all"
-                title="Officer Login">
-                <Shield size={17} />
-              </button>
-            </div>
-
-            {/* Mobile Hamburger Menu Button */}
-            <div className="flex sm:hidden items-center gap-2">
-              <button
-                onClick={() => navigate('/report')}
-                className="px-2.5 py-1.5 text-xs font-bold rounded-lg text-white bg-teal-600">
-                Report
-              </button>
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg text-slate-300 hover:text-white bg-slate-800"
-                aria-label="Toggle Menu">
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
+            <div className="hidden md:flex items-center gap-4 text-slate-400 text-[10px] flex-shrink-0 font-medium">
+              <span>Citizen Helpline: <strong className="text-white font-mono">1800-233-5599</strong></span>
+              <span className="text-slate-700">|</span>
+              <span className="text-emerald-400 font-mono flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                GIS Feed: Active
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="sm:hidden bg-[#0a1628] border-b border-slate-800 px-5 pt-3 pb-6 space-y-3 animate-slide-in">
-            <div className="flex flex-col space-y-2.5 text-sm font-medium text-slate-300 pt-2 border-t border-slate-800/80">
-              <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">Home</a>
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">How It Works</a>
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">Features</a>
-              <a href="#gis-intelligence" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">GIS Intelligence</a>
-              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">About SMKC</a>
-            </div>
-            <div className="pt-3 border-t border-slate-800 flex flex-col gap-2.5">
-              <button
-                onClick={() => { setMobileMenuOpen(false); navigate('/report'); }}
-                className="w-full py-2.5 rounded-lg text-xs font-bold text-white bg-teal-600 flex items-center justify-center gap-2">
-                <Camera size={14} /> Report a Violation
-              </button>
-              <button
-                onClick={() => { setMobileMenuOpen(false); navigate('/track'); }}
-                className="w-full py-2.5 rounded-lg text-xs font-semibold text-slate-200 bg-slate-800 border border-slate-700 flex items-center justify-center gap-2">
-                <Search size={14} className="text-teal-400" /> Track Complaint
-              </button>
-              <button
-                onClick={() => { setMobileMenuOpen(false); navigate('/whatsapp-simulator'); }}
-                className="w-full py-2.5 rounded-lg text-xs font-semibold text-green-300 bg-green-950/60 border border-green-800/60 flex items-center justify-center gap-2">
-                <MessageSquare size={14} className="text-green-400" /> WhatsApp Reporting Demo
-              </button>
-              <button
-                onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
-                className="w-full py-2 text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5">
-                <Shield size={14} /> Official / Officer Portal Login
-              </button>
+        {/* Main Navbar */}
+        <nav
+          className={`transition-all duration-300 ${
+            scrolled
+              ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm py-2.5'
+              : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/70 py-3'
+          }`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between gap-3 lg:gap-6">
+
+              {/* Left: Brand + Official SMKC Subtitle */}
+              <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0">
+                <div className="p-1 rounded-full bg-slate-100 ring-1 ring-slate-200 group-hover:ring-blue-400 transition-all flex-shrink-0">
+                  <SMKCLogo size={34} />
+                </div>
+                <div className="flex flex-col flex-shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="font-display font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight whitespace-nowrap">
+                      NAGAR-NETRA
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
+                      SMKC
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-500 font-medium tracking-wide whitespace-nowrap hidden sm:block">
+                    Civic Enforcement Platform
+                  </span>
+                </div>
+              </Link>
+
+              {/* Middle: Desktop Navigation Links (Desktop Wide >= 1280px) */}
+              <div className="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-600">
+                <a href="#hero" className="whitespace-nowrap hover:text-blue-700 transition-colors">Home</a>
+                <a href="#how-it-works" className="whitespace-nowrap hover:text-blue-700 transition-colors">How It Works</a>
+                <a href="#features" className="whitespace-nowrap hover:text-blue-700 transition-colors">Features</a>
+                <a href="#gis-intelligence" className="whitespace-nowrap hover:text-blue-700 transition-colors">GIS Intelligence</a>
+                <a href="#responsible-ai" className="whitespace-nowrap hover:text-blue-700 transition-colors">Responsible AI</a>
+                <a href="#about" className="whitespace-nowrap hover:text-blue-700 transition-colors">About</a>
+              </div>
+
+              {/* Middle: Streamlined Links for Medium-Laptops (1024px to 1279px, e.g. 1036px) */}
+              <div className="hidden lg:flex xl:hidden items-center gap-4 text-xs font-semibold text-slate-600">
+                <a href="#hero" className="whitespace-nowrap hover:text-blue-700 transition-colors">Home</a>
+                <a href="#how-it-works" className="whitespace-nowrap hover:text-blue-700 transition-colors">Workflow</a>
+                <a href="#features" className="whitespace-nowrap hover:text-blue-700 transition-colors">Features</a>
+                <a href="#gis-intelligence" className="whitespace-nowrap hover:text-blue-700 transition-colors">GIS Radar</a>
+                <a href="#responsible-ai" className="whitespace-nowrap hover:text-blue-700 transition-colors">AI Pipeline</a>
+              </div>
+
+              {/* Right: Action Buttons */}
+              <div className="hidden sm:flex items-center gap-2 lg:gap-2.5 flex-shrink-0">
+                <button
+                  onClick={() => navigate('/track')}
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                  <Search size={13} className="text-blue-600 flex-shrink-0" />
+                  <span>Track Complaint</span>
+                </button>
+                <button
+                  onClick={() => navigate('/report')}
+                  className="px-3.5 py-1.5 text-xs font-bold rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-sm shadow-blue-500/20 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                  <Camera size={13} className="flex-shrink-0" />
+                  <span>Report Violation</span>
+                </button>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50/80 rounded-lg border border-slate-200/80 hover:border-blue-200 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                  title="Official Portal Login">
+                  <Shield size={14} className="text-blue-600 flex-shrink-0" />
+                  <span className="hidden xl:inline">Officer Login</span>
+                </button>
+              </div>
+
+              {/* Mobile Hamburger Menu Button (< 640px) */}
+              <div className="flex sm:hidden items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => navigate('/report')}
+                  className="px-2.5 py-1.5 text-xs font-bold rounded-lg text-white bg-blue-600 shadow-xs whitespace-nowrap">
+                  Report
+                </button>
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="p-1.5 rounded-lg text-slate-700 hover:text-slate-900 bg-slate-100 border border-slate-200 flex-shrink-0"
+                  aria-label="Toggle Menu">
+                  {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
+              </div>
             </div>
           </div>
-        )}
-      </nav>
+
+          {/* Mobile Navigation Drawer */}
+          {mobileMenuOpen && (
+            <div className="sm:hidden bg-white border-b border-slate-200 px-5 pt-3 pb-6 space-y-3 shadow-lg animate-slide-in">
+              <div className="flex flex-col space-y-2.5 text-sm font-medium text-slate-600 pt-2 border-t border-slate-100">
+                <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-blue-700">Home</a>
+                <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-blue-700">How It Works</a>
+                <a href="#features" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-blue-700">Features</a>
+                <a href="#gis-intelligence" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-blue-700">GIS Intelligence</a>
+                <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-blue-700">About SMKC</a>
+              </div>
+              <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate('/report'); }}
+                  className="w-full py-2.5 rounded-lg text-xs font-bold text-white bg-blue-600 flex items-center justify-center gap-2 shadow-sm">
+                  <Camera size={14} /> Report a Violation
+                </button>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate('/track'); }}
+                  className="w-full py-2.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 flex items-center justify-center gap-2">
+                  <Search size={14} className="text-blue-600" /> Track Complaint
+                </button>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate('/whatsapp-simulator'); }}
+                  className="w-full py-2.5 rounded-lg text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 flex items-center justify-center gap-2">
+                  <MessageSquare size={14} className="text-emerald-600" /> WhatsApp Reporting Demo
+                </button>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
+                  className="w-full py-2 text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5">
+                  <Shield size={14} /> Official / Officer Portal Login
+                </button>
+              </div>
+            </div>
+          )}
+        </nav>
+      </header>
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 5, 6 & 7: HERO SECTION + AI/GIS COMMAND VISUAL
           ═══════════════════════════════════════════════════════════════ */}
       <section
         id="hero"
-        className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-[#070e1a] text-white">
+        className="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden bg-gradient-to-b from-slate-50 via-blue-50/25 to-white text-slate-900 border-b border-slate-200">
         {/* Subtle grid pattern & background atmosphere */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20"
+          className="absolute inset-0 pointer-events-none opacity-40"
           style={{
-            backgroundImage: `radial-gradient(circle at 50% 30%, rgba(13,148,136,0.25) 0%, transparent 65%),
-                              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle at 50% 20%, rgba(37,99,235,0.06) 0%, transparent 70%),
+                              linear-gradient(rgba(148,163,184,0.12) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(148,163,184,0.12) 1px, transparent 1px)`,
             backgroundSize: '100% 100%, 48px 48px, 48px 48px',
           }}
         />
@@ -334,26 +370,26 @@ export default function LandingPage() {
             {/* Left 7 Columns: Editorial Headline, Tagline, CTAs */}
             <div className="lg:col-span-7 space-y-6 text-left">
               {/* Government Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-teal-950/80 text-teal-300 border border-teal-500/30">
-                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/80 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
                 SMKC CIVIC INTELLIGENCE PLATFORM
               </div>
 
               {/* Main Headline */}
               <div className="space-y-2">
-                <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.08]">
+                <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-slate-900 tracking-tight leading-[1.08]">
                   Digital Eyes.<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-400">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-teal-600">
                     Verified Action.
                   </span>
                 </h1>
-                <p className="font-display font-semibold text-lg sm:text-xl text-teal-200/90 tracking-wide pt-1">
+                <p className="font-display font-semibold text-lg sm:text-xl text-blue-900/90 tracking-wide pt-1">
                   See civic violations. Verify them with evidence. Resolve them faster.
                 </p>
               </div>
 
               {/* Explanatory Paragraph */}
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
                 NAGAR-NETRA connects citizens, field officers and municipal authorities through AI-powered detection, geo-tagged evidence, GIS mapping and end-to-end enforcement workflows.
               </p>
 
@@ -361,63 +397,63 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <button
                   onClick={() => navigate('/report')}
-                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-lg shadow-teal-950/40 transition-all flex items-center justify-center gap-2 group">
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 group">
                   <span>Report a Violation</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
                   onClick={() => navigate('/track')}
-                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-slate-200 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 transition-all flex items-center justify-center gap-2">
-                  <Search size={15} className="text-teal-400" />
+                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 shadow-xs transition-all flex items-center justify-center gap-2">
+                  <Search size={15} className="text-blue-600" />
                   <span>Track Complaint</span>
                 </button>
 
                 <button
                   onClick={() => navigate('/whatsapp-simulator')}
-                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-green-300 bg-green-950/70 hover:bg-green-900/80 border border-green-700/60 transition-all flex items-center justify-center gap-2">
-                  <MessageSquare size={15} className="text-green-400" />
+                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 shadow-xs transition-all flex items-center justify-center gap-2">
+                  <MessageSquare size={15} className="text-emerald-600" />
                   <span>Report via WhatsApp</span>
                 </button>
               </div>
 
               {/* Trust Subtext */}
-              <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
-                <Landmark size={14} className="text-teal-400 flex-shrink-0" />
+              <div className="flex items-center gap-2 pt-2 text-xs text-slate-500">
+                <Landmark size={14} className="text-blue-600 flex-shrink-0" />
                 <span>Built for Sangli-Miraj-Kupwad Municipal Corporation (SMKC)</span>
               </div>
             </div>
 
             {/* Right 5 Columns: Sophisticated GIS + AI Command Display */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl bg-gradient-to-b from-[#0c1829] to-[#081220] border border-slate-700/70 shadow-2xl overflow-hidden p-4 sm:p-5">
+              <div className="relative rounded-2xl bg-white border border-slate-200/90 shadow-xl shadow-slate-200/60 overflow-hidden p-4 sm:p-5">
 
                 {/* Command Canvas Top Bar */}
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs">
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="font-mono text-[11px] text-teal-300 font-semibold uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    <span className="font-mono text-[11px] text-blue-700 font-bold uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80">
                       GIS RADAR · LIVE
                     </span>
                   </div>
-                  <span className="font-mono text-[11px] text-slate-400">
+                  <span className="font-mono text-[11px] text-slate-500">
                     SANGLI JURISDICTION
                   </span>
                 </div>
 
                 {/* Stylized City Vector Map Area */}
-                <div className="relative h-64 sm:h-72 w-full rounded-xl bg-[#060c16] border border-slate-800/80 overflow-hidden">
+                <div className="relative h-64 sm:h-72 w-full rounded-xl bg-slate-50 border border-slate-200 overflow-hidden">
                   {/* Subtle Grid Vectors */}
-                  <svg className="absolute inset-0 w-full h-full opacity-35" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="absolute inset-0 w-full h-full opacity-60" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <pattern id="cityGrid" width="30" height="30" patternUnits="userSpaceOnUse">
-                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#0d9488" strokeWidth="0.5" strokeOpacity="0.4" />
+                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#cbd5e1" strokeWidth="0.5" strokeOpacity="0.8" />
                       </pattern>
                     </defs>
                     <rect width="100%" height="100%" fill="url(#cityGrid)" />
                     {/* Simulated Arterial Roads / Krishna River line */}
-                    <path d="M 0,90 Q 90,140 180,110 T 360,180" fill="none" stroke="#0284c7" strokeWidth="2.5" strokeOpacity="0.4" />
-                    <path d="M 40,240 L 160,80 L 320,130" fill="none" stroke="#475569" strokeWidth="1.5" strokeDasharray="3,3" />
+                    <path d="M 0,90 Q 90,140 180,110 T 360,180" fill="none" stroke="#38bdf8" strokeWidth="3" strokeOpacity="0.8" />
+                    <path d="M 40,240 L 160,80 L 320,130" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="3,3" />
                   </svg>
 
                   {/* Ward Labels */}
@@ -443,14 +479,14 @@ export default function LandingPage() {
                         aria-label={`View Case ${item.id}`}>
                         <span
                           className={`absolute -inset-2 rounded-full opacity-75 animate-ping ${
-                            isSelected ? 'bg-teal-400' : 'bg-slate-500'
+                            isSelected ? 'bg-blue-400' : 'bg-slate-400'
                           }`}
                         />
                         <div
-                          className={`relative w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] shadow-lg transition-transform ${
+                          className={`relative w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] shadow-md transition-transform ${
                             isSelected
-                              ? 'bg-teal-400 text-slate-950 ring-4 ring-teal-400/30 scale-125'
-                              : 'bg-slate-700 text-white hover:scale-110'
+                              ? 'bg-blue-600 text-white ring-4 ring-blue-500/25 scale-125'
+                              : 'bg-slate-200 text-slate-700 hover:scale-110 border border-slate-300'
                           }`}>
                           📍
                         </div>
@@ -459,19 +495,19 @@ export default function LandingPage() {
                   })}
 
                   {/* Detection Bounding Box Graphic Overlay on Map */}
-                  <div className="absolute top-6 right-6 pointer-events-none border border-teal-500/60 bg-teal-950/20 rounded p-1.5 backdrop-blur-xs text-[9px] font-mono text-teal-300">
-                    <div className="flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                  <div className="absolute top-4 right-4 pointer-events-none border border-blue-200 bg-white/95 rounded-md p-1.5 shadow-sm text-[9px] font-mono text-blue-700">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                       <span>AI DETECTED · {activeHeroCase.confidence}% CONF</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Active Case Telemetry Panel */}
-                <div className="mt-3.5 p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2">
+                <div className="mt-3.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-white text-sm">
+                      <span className="font-mono font-bold text-slate-900 text-sm">
                         {activeHeroCase.id}
                       </span>
                       <span
@@ -480,19 +516,19 @@ export default function LandingPage() {
                         {activeHeroCase.status}
                       </span>
                     </div>
-                    <span className="font-mono text-[11px] text-teal-400 font-semibold">
+                    <span className="font-mono text-[11px] text-blue-700 font-semibold bg-blue-50 px-2 py-0.5 rounded border border-blue-200/60">
                       AI: {activeHeroCase.confidence}%
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-slate-800 text-slate-300">
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1.5 border-t border-slate-200 text-slate-700">
                     <div>
                       <span className="text-slate-500 block text-[10px]">VIOLATION:</span>
-                      <span className="font-semibold text-white">{activeHeroCase.type}</span>
+                      <span className="font-semibold text-slate-900">{activeHeroCase.type}</span>
                     </div>
                     <div>
                       <span className="text-slate-500 block text-[10px]">COORDINATES:</span>
-                      <span className="font-mono text-slate-300">{activeHeroCase.coords}</span>
+                      <span className="font-mono text-slate-700">{activeHeroCase.coords}</span>
                     </div>
                     <div>
                       <span className="text-slate-500 block text-[10px]">LOCATION:</span>
@@ -500,15 +536,15 @@ export default function LandingPage() {
                     </div>
                     <div>
                       <span className="text-slate-500 block text-[10px]">OCR DETECTED:</span>
-                      <span className="font-mono text-amber-300">{activeHeroCase.ocr}</span>
+                      <span className="font-mono text-amber-700 font-semibold">{activeHeroCase.ocr}</span>
                     </div>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-200/60">
                     <span>Click any marker to inspect</span>
                     <button
                       onClick={() => navigate('/map')}
-                      className="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1">
+                      className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1">
                       Full Case Map <ArrowRight size={12} />
                     </button>
                   </div>
@@ -754,16 +790,16 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 11: "HOW IT WORKS" WORKFLOW PIPELINE
           ═══════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" className="py-20 lg:py-24 bg-[#0a1628] text-white">
+      <section id="how-it-works" className="py-20 lg:py-24 bg-slate-50/80 border-b border-slate-200 text-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1 rounded-full border border-teal-500/30">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/80">
               End-to-End Pipeline
             </span>
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white mt-3 mb-4">
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
               How NAGAR-NETRA Works
             </h2>
-            <p className="text-slate-300 text-base leading-relaxed">
+            <p className="text-slate-600 text-base leading-relaxed">
               Every complaint follows a structured 7-stage verifiable lifecycle from initial capture to physical resolution.
             </p>
           </div>
@@ -776,8 +812,8 @@ export default function LandingPage() {
                 onClick={() => setActivePipelineIdx(idx)}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
                   activePipelineIdx === idx
-                    ? 'bg-teal-500 text-slate-950 shadow-md shadow-teal-500/30'
-                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/60'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 shadow-xs'
                 }`}>
                 <span className="font-mono">{step.num}</span>
                 <span>{step.title}</span>
@@ -786,7 +822,7 @@ export default function LandingPage() {
           </div>
 
           {/* Active Step Feature Showcase */}
-          <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-700/80 p-6 sm:p-10 shadow-xl">
+          <div className="rounded-2xl bg-white border border-slate-200/90 p-6 sm:p-10 shadow-lg shadow-slate-200/50">
             {(() => {
               const current = PIPELINE_STEPS[activePipelineIdx];
               const StepIcon = current.icon;
@@ -794,31 +830,31 @@ export default function LandingPage() {
                 <div className="grid md:grid-cols-12 gap-8 items-center">
                   <div className="md:col-span-4 flex flex-col items-start space-y-4">
                     <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-md"
                       style={{ background: current.color, color: 'white' }}>
                       <StepIcon size={32} />
                     </div>
                     <div>
-                      <span className="text-xs font-mono font-bold text-teal-400">
+                      <span className="text-xs font-mono font-bold text-blue-600">
                         PHASE {current.num} OF 07
                       </span>
-                      <h3 className="font-display font-extrabold text-2xl text-white mt-1">
+                      <h3 className="font-display font-extrabold text-2xl text-slate-900 mt-1">
                         {current.title}
                       </h3>
-                      <p className="text-slate-400 text-xs font-medium">
+                      <p className="text-slate-500 text-xs font-medium">
                         {current.sub}
                       </p>
                     </div>
                   </div>
 
-                  <div className="md:col-span-8 space-y-4 border-t md:border-t-0 md:border-l border-slate-800 md:pl-8 pt-4 md:pt-0">
-                    <p className="text-slate-200 text-base sm:text-lg leading-relaxed">
+                  <div className="md:col-span-8 space-y-4 border-t md:border-t-0 md:border-l border-slate-200 md:pl-8 pt-4 md:pt-0">
+                    <p className="text-slate-700 text-base sm:text-lg leading-relaxed">
                       {current.desc}
                     </p>
-                    <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700 text-xs text-slate-300 flex items-start gap-3">
-                      <Sparkles size={16} className="text-teal-400 flex-shrink-0 mt-0.5" />
+                    <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-100 text-xs text-slate-700 flex items-start gap-3">
+                      <Sparkles size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-white block mb-0.5">Municipal Integrity Guard:</strong>
+                        <strong className="text-blue-900 block mb-0.5">Municipal Integrity Guard:</strong>
                         {current.detail}
                       </div>
                     </div>
@@ -851,35 +887,35 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
             {/* Left: Uploaded Evidence Photo with Bounding Box Overlay */}
             <div className="lg:col-span-6">
-              <div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-xl">
+              <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-lg">
                 {/* Photo Simulation */}
-                <div className="h-64 sm:h-72 w-full bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center relative p-6">
+                <div className="h-64 sm:h-72 w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center relative p-6">
                   {/* Background Mock Hoarding Graphic */}
-                  <div className="w-full max-w-sm h-36 border-2 border-dashed border-slate-600 rounded-lg flex flex-col items-center justify-center p-3 text-center bg-slate-900/60">
+                  <div className="w-full max-w-sm h-36 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center p-3 text-center bg-white/80 shadow-xs">
                     <span className="text-3xl mb-1">🏢</span>
-                    <span className="font-display font-bold text-slate-300 text-sm">ABC DEVELOPERS · LUXURY APARTMENTS</span>
-                    <span className="text-xs font-mono text-slate-400">CONTACT: +91 98XXXXXXXX</span>
+                    <span className="font-display font-bold text-slate-900 text-sm">ABC DEVELOPERS · LUXURY APARTMENTS</span>
+                    <span className="text-xs font-mono text-slate-500">CONTACT: +91 98XXXXXXXX</span>
                   </div>
 
                   {/* AI Detection Bounding Box Graphic */}
-                  <div className="absolute inset-8 border-2 border-teal-400 bg-teal-500/10 rounded-md pointer-events-none flex flex-col justify-between p-2">
+                  <div className="absolute inset-8 border-2 border-blue-500 bg-blue-500/10 rounded-md pointer-events-none flex flex-col justify-between p-2">
                     <div className="flex items-center justify-between">
-                      <span className="bg-teal-500 text-slate-950 font-mono font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                      <span className="bg-blue-600 text-white font-mono font-bold text-[10px] px-2 py-0.5 rounded shadow-sm">
                         UNAUTHORIZED_HOARDING · 94%
                       </span>
-                      <span className="font-mono text-[9px] text-teal-300">
+                      <span className="font-mono text-[9px] text-blue-800 font-semibold bg-white/80 px-1 rounded">
                         16.8524, 74.5815
                       </span>
                     </div>
-                    <div className="self-end bg-slate-900/90 text-amber-300 font-mono text-[9px] px-2 py-0.5 rounded border border-amber-500/40">
+                    <div className="self-end bg-white text-slate-800 font-mono text-[9px] px-2 py-0.5 rounded border border-slate-300 shadow-xs">
                       OCR: ABC DEVELOPERS
                     </div>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-950 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+                <div className="p-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-600 flex items-center justify-between">
                   <span>RAW EVIDENCE: IMG_20261004_SMKC.JPG</span>
-                  <span className="text-teal-400 font-mono font-semibold">YOLOv8 + EASYOCR</span>
+                  <span className="text-blue-700 font-mono font-semibold">YOLOv8 + EASYOCR</span>
                 </div>
               </div>
             </div>
@@ -935,25 +971,25 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 13: GIS SECTION ("See the city as a living map.")
           ═══════════════════════════════════════════════════════════════ */}
-      <section id="gis-intelligence" className="py-20 lg:py-24 bg-[#070e1a] text-white">
+      <section id="gis-intelligence" className="py-20 lg:py-24 bg-gradient-to-b from-white via-slate-50/60 to-white border-b border-slate-200 text-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 bg-cyan-50 px-3 py-1 rounded-full border border-cyan-200/80">
               Spatial Intelligence
             </span>
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white mt-3 mb-4">
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
               See the city as a living map.
             </h2>
-            <p className="text-slate-300 text-base leading-relaxed">
+            <p className="text-slate-600 text-base leading-relaxed">
               Track active violations, examine ward-level density, spot repeat encroachment hotspots, and route field enforcement squads efficiently.
             </p>
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left 8 Cols: Interactive GIS Canvas */}
-            <div className="lg:col-span-8 rounded-2xl bg-[#0a1628] border border-slate-700 p-5 shadow-2xl space-y-4">
+            <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200 p-5 shadow-lg shadow-slate-200/50 space-y-4">
               {/* Ward Selector Tabs */}
-              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-100">
                 <div className="flex gap-2">
                   {Object.entries(GIS_WARS).map(([key, data]) => (
                     <button
@@ -961,35 +997,35 @@ export default function LandingPage() {
                       onClick={() => setSelectedWard(key)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         selectedWard === key
-                          ? 'bg-teal-500 text-slate-950 font-bold'
-                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                          ? 'bg-blue-600 text-white font-bold shadow-sm'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                       }`}>
                       {data.label}
                     </button>
                   ))}
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">
+                <span className="text-[11px] font-mono text-slate-500">
                   SMKC BOUNDARY: 16.85° N, 74.58° E
                 </span>
               </div>
 
               {/* Map Preview Area */}
-              <div className="relative h-72 sm:h-80 w-full rounded-xl bg-[#060c16] border border-slate-800 overflow-hidden">
-                <svg className="absolute inset-0 w-full h-full opacity-40">
+              <div className="relative h-72 sm:h-80 w-full rounded-xl bg-slate-50 border border-slate-200 overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full opacity-60">
                   <defs>
                     <pattern id="gisGrid2" width="24" height="24" patternUnits="userSpaceOnUse">
-                      <circle cx="2" cy="2" r="1" fill="#0d9488" fillOpacity="0.5" />
+                      <circle cx="2" cy="2" r="1" fill="#94a3b8" fillOpacity="0.6" />
                     </pattern>
                   </defs>
                   <rect width="100%" height="100%" fill="url(#gisGrid2)" />
                   {/* Stylized road network */}
-                  <path d="M 20,40 L 180,140 L 400,100" stroke="#334155" strokeWidth="2" fill="none" />
-                  <path d="M 80,260 L 220,160 L 320,280" stroke="#334155" strokeWidth="2" fill="none" />
+                  <path d="M 20,40 L 180,140 L 400,100" stroke="#cbd5e1" strokeWidth="2.5" fill="none" />
+                  <path d="M 80,260 L 220,160 L 320,280" stroke="#94a3b8" strokeWidth="2" fill="none" />
                 </svg>
 
                 {/* Hotspot Pulse Rings */}
-                <div className="absolute top-1/3 left-1/3 w-24 h-24 rounded-full bg-rose-500/10 border border-rose-500/30 animate-pulse pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                  <span className="text-[9px] font-mono text-rose-300 font-bold">HOTSPOT 1</span>
+                <div className="absolute top-1/3 left-1/3 w-24 h-24 rounded-full bg-rose-500/15 border border-rose-400 animate-pulse pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-xs">
+                  <span className="text-[9px] font-mono text-rose-700 font-bold bg-white/90 px-1.5 py-0.5 rounded shadow-xs">HOTSPOT 1</span>
                 </div>
 
                 {/* Case Pins for Active Ward */}
@@ -997,21 +1033,21 @@ export default function LandingPage() {
                   <div
                     key={c.id}
                     style={{ top: c.top, left: c.left }}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 p-1 px-2 rounded-md bg-slate-900/90 border border-slate-700 shadow-md">
-                    <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
-                    <span className="font-mono text-[10px] text-white font-bold">{c.id}</span>
-                    <span className="text-[9px] text-slate-400">({c.ward})</span>
+                    className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 p-1 px-2 rounded-md bg-white border border-slate-200 shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+                    <span className="font-mono text-[10px] text-slate-900 font-bold">{c.id}</span>
+                    <span className="text-[9px] text-slate-500">({c.ward})</span>
                   </div>
                 ))}
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-slate-400">
+                <span className="text-slate-500">
                   Live layer view with ward zones and verified GPS points.
                 </span>
                 <button
                   onClick={() => navigate('/map')}
-                  className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-teal-600 hover:bg-teal-500 flex items-center gap-1.5">
+                  className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 flex items-center gap-1.5">
                   Explore Case Map <ArrowRight size={14} />
                 </button>
               </div>
@@ -1019,44 +1055,45 @@ export default function LandingPage() {
 
             {/* Right 4 Cols: GIS KPI Intelligence Panel */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-xl space-y-5">
+              <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-lg shadow-slate-200/50 space-y-5">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display font-bold text-white text-base">
+                  <h3 className="font-display font-bold text-slate-900 text-base">
                     GIS Intelligence
                   </h3>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">
-                    Prototype Data
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+                    Live Ward Feed
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3.5">
-                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-                    <span className="text-[11px] text-slate-400 block">Active Cases</span>
-                    <span className="font-display font-extrabold text-2xl text-white">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[11px] text-slate-500 block">Active Cases</span>
+                    <span className="font-display font-extrabold text-2xl text-slate-900">
                       {GIS_WARS[selectedWard].active}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-                    <span className="text-[11px] text-slate-400 block">High Priority</span>
-                    <span className="font-display font-extrabold text-2xl text-rose-400">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[11px] text-slate-500 block">High Priority</span>
+                    <span className="font-display font-extrabold text-2xl text-rose-600">
                       {GIS_WARS[selectedWard].highPriority}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-                    <span className="text-[11px] text-slate-400 block">Active Hotspots</span>
-                    <span className="font-display font-extrabold text-2xl text-amber-400">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[11px] text-slate-500 block">Active Hotspots</span>
+                    <span className="font-display font-extrabold text-2xl text-amber-600">
                       {GIS_WARS[selectedWard].hotspots}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-                    <span className="text-[11px] text-slate-400 block">Resolved Cases</span>
-                    <span className="font-display font-extrabold text-2xl text-emerald-400">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[11px] text-slate-500 block">Resolved Cases</span>
+                    <span className="font-display font-extrabold text-2xl text-emerald-600">
                       {GIS_WARS[selectedWard].resolved}
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed pt-1 border-t border-slate-800">
+                <p className="text-xs text-slate-500 leading-relaxed pt-1 border-t border-slate-100">
                   Data aggregates geo-spatial reports across Sangli, Miraj, and Kupwad municipal divisions for rapid supervisor review.
                 </p>
               </div>
@@ -1135,18 +1172,18 @@ export default function LandingPage() {
                 </div>
 
                 {/* WA Chat Log */}
-                <div className="p-4 space-y-3 bg-[#0b141a] text-xs">
+                <div className="p-4 space-y-3 bg-[#efeae2] text-xs">
                   {/* Citizen MSG */}
                   <div className="flex justify-end">
-                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#005c4b] text-white">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#d9fdd3] text-slate-800 shadow-xs">
                       <p>Illegal hoarding erected near Sangli-Miraj Road overbridge.</p>
-                      <span className="text-[9px] text-slate-300 block text-right mt-1">10:14 AM</span>
+                      <span className="text-[9px] text-slate-500 block text-right mt-1">10:14 AM</span>
                     </div>
                   </div>
 
                   {/* Bot MSG */}
                   <div className="flex justify-start">
-                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-[#202c33] text-slate-100">
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-white text-slate-800 shadow-xs border border-slate-200/60">
                       <p>🏛️ Namaste! Please send a clear evidence photo of the violation.</p>
                       <span className="text-[9px] text-slate-400 block text-right mt-1">10:14 AM</span>
                     </div>
@@ -1154,20 +1191,20 @@ export default function LandingPage() {
 
                   {/* Citizen MSG: Photo */}
                   <div className="flex justify-end">
-                    <div className="max-w-[80%] rounded-2xl rounded-tr-none p-2 bg-[#005c4b] text-white space-y-1">
-                      <div className="h-20 bg-black/30 rounded-lg flex items-center justify-center text-center">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none p-2 bg-[#d9fdd3] text-slate-800 shadow-xs space-y-1">
+                      <div className="h-20 bg-slate-100 rounded-lg flex items-center justify-center text-center border border-emerald-200/60">
                         <div>
-                          <Camera size={20} className="mx-auto text-teal-300 mb-1" />
-                          <span className="text-[10px] text-slate-200">photo_evidence.jpg</span>
+                          <Camera size={20} className="mx-auto text-emerald-600 mb-1" />
+                          <span className="text-[10px] text-slate-700 font-medium">photo_evidence.jpg</span>
                         </div>
                       </div>
-                      <span className="text-[9px] text-slate-300 block text-right">10:15 AM</span>
+                      <span className="text-[9px] text-slate-500 block text-right">10:15 AM</span>
                     </div>
                   </div>
 
                   {/* Bot MSG: Location Request */}
                   <div className="flex justify-start">
-                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-[#202c33] text-slate-100">
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-white text-slate-800 shadow-xs border border-slate-200/60">
                       <p>Please share your current GPS location to pin this complaint on our GIS map.</p>
                       <span className="text-[9px] text-slate-400 block text-right mt-1">10:15 AM</span>
                     </div>
@@ -1175,28 +1212,28 @@ export default function LandingPage() {
 
                   {/* Citizen MSG: Location */}
                   <div className="flex justify-end">
-                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#005c4b] text-white flex items-center gap-2">
-                      <MapPin size={18} className="text-teal-300 flex-shrink-0" />
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#d9fdd3] text-slate-800 shadow-xs flex items-center gap-2">
+                      <MapPin size={18} className="text-emerald-700 flex-shrink-0" />
                       <div>
                         <span className="font-semibold block">Location Shared</span>
-                        <span className="text-[10px] text-teal-200">Sangli-Miraj Road (16.8524°N, 74.5815°E)</span>
+                        <span className="text-[10px] text-emerald-800">Sangli-Miraj Road (16.8524°N, 74.5815°E)</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Bot Confirmation Case Card */}
                   <div className="flex justify-start">
-                    <div className="max-w-[88%] rounded-2xl rounded-tl-none p-3 bg-[#202c33] text-slate-100 border border-teal-500/30 space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-teal-400 font-bold">
+                    <div className="max-w-[88%] rounded-2xl rounded-tl-none p-3 bg-white text-slate-800 border border-emerald-400 shadow-sm space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
                         <CheckCheck size={14} />
                         <span>Case Registered Successfully!</span>
                       </div>
-                      <div className="font-mono text-white text-[11px] bg-slate-900/60 p-1.5 rounded">
-                        <div>CASE ID: <strong>NNT-2026-004271</strong></div>
-                        <div>STATUS: <strong className="text-amber-400">Under Review</strong></div>
-                        <div>AI SCORE: <strong className="text-teal-300">94% Confidence</strong></div>
+                      <div className="font-mono text-slate-800 text-[11px] bg-slate-50 border border-slate-200 p-2 rounded">
+                        <div>CASE ID: <strong className="text-slate-900">NNT-2026-004271</strong></div>
+                        <div>STATUS: <strong className="text-amber-700">Under Review</strong></div>
+                        <div>AI SCORE: <strong className="text-emerald-700">94% Confidence</strong></div>
                       </div>
-                      <span className="text-[10px] text-slate-400 block">
+                      <span className="text-[10px] text-slate-500 block">
                         Reply STATUS NNT-2026-004271 to track updates anytime.
                       </span>
                     </div>
@@ -1275,29 +1312,33 @@ export default function LandingPage() {
             </div>
 
             {/* Visual Box */}
-            <div className="mt-6 rounded-2xl overflow-hidden bg-slate-900 text-white min-h-[260px] flex flex-col justify-between p-6 relative">
+            <div className={`mt-6 rounded-2xl overflow-hidden border min-h-[260px] flex flex-col justify-between p-6 relative shadow-sm transition-all ${
+              beforeAfterMode === 'before'
+                ? 'bg-rose-50/60 border-rose-200 text-slate-900'
+                : 'bg-emerald-50/60 border-emerald-200 text-slate-900'
+            }`}>
               {beforeAfterMode === 'before' ? (
                 <>
                   <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/80 text-white">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-600 text-white shadow-xs">
                       EVIDENCE PHOTOGRAPH (DAY 01)
                     </span>
-                    <span className="text-xs font-mono text-slate-400">
+                    <span className="text-xs font-mono text-slate-500">
                       GPS: 16.8524° N, 74.5815° E
                     </span>
                   </div>
                   <div className="my-8 text-center">
-                    <div className="w-20 h-20 rounded-2xl bg-rose-950/80 border border-rose-600/60 mx-auto flex items-center justify-center text-3xl mb-3">
+                    <div className="w-20 h-20 rounded-2xl bg-rose-100 border border-rose-300 mx-auto flex items-center justify-center text-3xl mb-3 shadow-xs">
                       🚧
                     </div>
-                    <h4 className="font-display font-bold text-xl text-white">
+                    <h4 className="font-display font-bold text-xl text-slate-900">
                       Unauthorized 40ft Structural Hoarding Obstructing Pedestrian Walkway
                     </h4>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-600 mt-1">
                       No municipal permit issued · Advertiser: ABC Developers · Risk: High
                     </p>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-rose-300 font-mono border-t border-slate-800 pt-3">
+                  <div className="flex items-center justify-between text-xs text-rose-800 font-mono border-t border-rose-200 pt-3">
                     <span>STATUS: FIELD VERIFICATION COMPLETED</span>
                     <span>ACTION: 48H NOTICE ISSUED</span>
                   </div>
@@ -1305,25 +1346,25 @@ export default function LandingPage() {
               ) : (
                 <>
                   <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/80 text-white">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
                       POST-ENFORCEMENT AUDIT (DAY 03)
                     </span>
-                    <span className="text-xs font-mono text-slate-400">
+                    <span className="text-xs font-mono text-slate-500">
                       GPS: 16.8524° N, 74.5815° E
                     </span>
                   </div>
                   <div className="my-8 text-center">
-                    <div className="w-20 h-20 rounded-2xl bg-emerald-950/80 border border-emerald-500/60 mx-auto flex items-center justify-center text-3xl mb-3">
+                    <div className="w-20 h-20 rounded-2xl bg-emerald-100 border border-emerald-300 mx-auto flex items-center justify-center text-3xl mb-3 shadow-xs">
                       ✅
                     </div>
-                    <h4 className="font-display font-bold text-xl text-white">
+                    <h4 className="font-display font-bold text-xl text-slate-900">
                       Structure Dismantled & Public Right-of-Way Completely Restored
                     </h4>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-600 mt-1">
                       Verified by Field Officer Vijay Kadam · Penalty assessed · Before/After photo approved
                     </p>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-emerald-300 font-mono border-t border-slate-800 pt-3">
+                  <div className="flex items-center justify-between text-xs text-emerald-800 font-mono border-t border-emerald-200 pt-3">
                     <span>STATUS: RESOLVED & CLOSED</span>
                     <span>AUDIT: IMMUTABLE ARCHIVE</span>
                   </div>
@@ -1341,17 +1382,17 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 17: CENTRAL COMMAND CENTER SECTION
           ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24 bg-[#0a1628] text-white">
+      <section className="py-20 lg:py-24 bg-slate-50/80 border-b border-slate-200 text-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-5 space-y-6">
-              <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1 rounded-full border border-teal-500/30">
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/80">
                 Municipal Operations
               </span>
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight">
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight">
                 One view for the entire city.
               </h2>
-              <p className="text-slate-300 text-base leading-relaxed">
+              <p className="text-slate-600 text-base leading-relaxed">
                 Supervisors and municipal administrators monitor real-time case triage, field officer workloads, compliance countdowns, and ward hotspot distributions in a unified dashboard.
               </p>
 
@@ -1362,8 +1403,8 @@ export default function LandingPage() {
                   'Balanced workload distribution among certified field officers',
                   'Audit log exporter for municipal compliance meetings',
                 ].map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 text-sm text-slate-300">
-                    <CheckCheck size={16} className="text-teal-400 flex-shrink-0" />
+                  <div key={item} className="flex items-center gap-2.5 text-sm text-slate-700">
+                    <CheckCheck size={16} className="text-blue-600 flex-shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -1372,7 +1413,7 @@ export default function LandingPage() {
               <div className="pt-2">
                 <button
                   onClick={() => navigate('/login')}
-                  className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-teal-600 hover:bg-teal-500 shadow-md shadow-teal-950/40 transition-all flex items-center gap-2">
+                  className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all flex items-center gap-2">
                   <Shield size={16} /> Explore SMKC Command Center
                 </button>
               </div>
@@ -1380,38 +1421,38 @@ export default function LandingPage() {
 
             {/* Dashboard UI Mockup Preview */}
             <div className="lg:col-span-7">
-              <div className="rounded-2xl bg-slate-900 border border-slate-700/80 p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
+              <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-lg shadow-slate-200/50 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-teal-400" />
-                    <span className="font-mono text-slate-300 font-bold">SMKC CENTRAL DASHBOARD</span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                    <span className="font-mono text-slate-900 font-bold">SMKC CENTRAL DASHBOARD</span>
                   </div>
-                  <span className="text-slate-400">JURISDICTION: SANGLI-MIRAJ-KUPWAD</span>
+                  <span className="text-slate-500 font-medium">JURISDICTION: SANGLI-MIRAJ-KUPWAD</span>
                 </div>
 
                 {/* Dashboard Stats Row */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">TOTAL CASES</span>
-                    <span className="font-display font-bold text-xl text-white">18</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-slate-500 block text-[10px] font-medium">TOTAL CASES</span>
+                    <span className="font-display font-bold text-xl text-slate-900">18</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">VERIFYING</span>
-                    <span className="font-display font-bold text-xl text-amber-400">7</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-slate-500 block text-[10px] font-medium">VERIFYING</span>
+                    <span className="font-display font-bold text-xl text-amber-600">7</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">NOTICES ACTIVE</span>
-                    <span className="font-display font-bold text-xl text-rose-400">5</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-slate-500 block text-[10px] font-medium">NOTICES ACTIVE</span>
+                    <span className="font-display font-bold text-xl text-rose-600">5</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">RESOLVED</span>
-                    <span className="font-display font-bold text-xl text-emerald-400">42</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-slate-500 block text-[10px] font-medium">RESOLVED</span>
+                    <span className="font-display font-bold text-xl text-emerald-600">42</span>
                   </div>
                 </div>
 
                 {/* Mini Workload & Recent Cases List */}
                 <div className="space-y-2 text-xs">
-                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                  <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px] block">
                     Recent Verified Enforcement Stream
                   </span>
                   {[
@@ -1419,12 +1460,12 @@ export default function LandingPage() {
                     { id: 'NNT-4265', issue: 'Encroachment', ward: 'Kupwad', officer: 'Amol Shinde', status: 'Notice Sent' },
                     { id: 'NNT-4240', issue: 'Road Obstruction', ward: 'Miraj', officer: 'Priya Sharma', status: 'Dismantled' },
                   ].map((row) => (
-                    <div key={row.id} className="p-2.5 rounded-lg bg-slate-800/50 flex items-center justify-between text-slate-300">
+                    <div key={row.id} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between text-slate-700">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-teal-400 font-bold">{row.id}</span>
+                        <span className="font-mono text-blue-600 font-bold">{row.id}</span>
                         <span>{row.issue} · {row.ward}</span>
                       </div>
-                      <span className="text-slate-400 font-mono text-[11px]">{row.officer}</span>
+                      <span className="text-slate-500 font-mono text-[11px]">{row.officer}</span>
                     </div>
                   ))}
                 </div>
@@ -1631,19 +1672,19 @@ export default function LandingPage() {
           </div>
 
           {/* Geospatial Compatibility Strip */}
-          <div className="rounded-2xl bg-slate-900 text-white p-6 sm:p-8 max-w-5xl mx-auto text-center space-y-4">
-            <span className="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider">
+          <div className="rounded-2xl bg-gradient-to-r from-blue-50 via-indigo-50/60 to-blue-50 border border-blue-200 text-slate-900 p-6 sm:p-8 max-w-5xl mx-auto text-center space-y-4 shadow-sm">
+            <span className="text-xs font-mono font-bold text-blue-700 uppercase tracking-wider bg-blue-100/60 px-2.5 py-1 rounded border border-blue-200">
               Interoperable Standards
             </span>
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+            <h3 className="font-display font-bold text-xl sm:text-2xl text-slate-900">
               Built for modern geospatial workflows.
             </h3>
-            <p className="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
+            <p className="text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto">
               NAGAR-NETRA coordinates and vector layers are architected for open GIS interchange with state and national mapping infrastructure.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               {['Leaflet GIS', 'OpenStreetMap', 'GeoJSON Layers', 'KML / KMZ Export', 'NIC Geo-Portals', 'ESRI Shapefiles'].map(std => (
-                <span key={std} className="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-mono text-slate-300 border border-slate-700">
+                <span key={std} className="px-3 py-1.5 rounded-lg bg-white text-xs font-mono text-slate-700 border border-slate-200 shadow-xs">
                   {std}
                 </span>
               ))}
@@ -1659,7 +1700,7 @@ export default function LandingPage() {
       <section className="py-20 lg:py-24 bg-slate-50/70 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
               Civic Outcomes
             </span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
@@ -1698,8 +1739,8 @@ export default function LandingPage() {
                 icon: ShieldCheck
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl p-6 bg-white border border-slate-200 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center mb-4">
+              <div key={item.title} className="rounded-2xl p-6 bg-white border border-slate-200 shadow-xs hover:shadow-md transition-shadow">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-4">
                   <item.icon size={20} />
                 </div>
                 <h4 className="font-display font-bold text-slate-900 text-base mb-2">
@@ -1715,19 +1756,19 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 23: STRONG CALL TO ACTION (DEEP NAVY FOOTER HERO)
+          SECTION 23: STRONG CALL TO ACTION (ROYAL BLUE CIVIC BANNER)
           ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24 bg-gradient-to-b from-[#0a1628] to-[#060c16] text-white text-center relative overflow-hidden">
+      <section className="py-20 lg:py-24 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white text-center relative overflow-hidden shadow-xl">
         {/* Background Radial Glow */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20"
+          className="absolute inset-0 pointer-events-none opacity-25"
           style={{
-            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(13,148,136,0.4) 0%, transparent 60%)',
+            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 60%)',
           }}
         />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1.5 rounded-full border border-teal-500/30">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-100 bg-white/15 px-3 py-1.5 rounded-full border border-white/25">
             Citizen & Municipal Participation
           </span>
 
@@ -1736,51 +1777,51 @@ export default function LandingPage() {
             Help SMKC resolve it.
           </h2>
 
-          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-blue-100 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
             Report suspected illegal hoardings and public-space encroachments with photo evidence and location. Together, let's keep Sangli, Miraj, and Kupwad safe and organized.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
             <button
               onClick={() => navigate('/report')}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-xl shadow-teal-950/50 transition-all flex items-center justify-center gap-2">
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm text-blue-900 bg-white hover:bg-slate-100 shadow-xl shadow-blue-950/20 transition-all flex items-center justify-center gap-2">
               <Camera size={16} /> Report a Violation
             </button>
             <button
               onClick={() => navigate('/whatsapp-simulator')}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-green-300 bg-green-950/70 hover:bg-green-900/80 border border-green-700/60 transition-all flex items-center justify-center gap-2">
-              <MessageSquare size={16} className="text-green-400" /> Report via WhatsApp
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-900/20 transition-all flex items-center justify-center gap-2">
+              <MessageSquare size={16} className="text-white" /> Report via WhatsApp
             </button>
             <button
               onClick={() => navigate('/track')}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all flex items-center justify-center gap-2">
-              <Search size={16} className="text-teal-400" /> Track Complaint
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-white bg-blue-900/60 hover:bg-blue-900/80 border border-blue-400/40 transition-all flex items-center justify-center gap-2">
+              <Search size={16} className="text-blue-200" /> Track Complaint
             </button>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 24: FOOTER (OFFICIAL BRANDING & DISCLOSURE)
+          SECTION 24: FOOTER (OFFICIAL LIGHT CIVIC BRANDING)
           ═══════════════════════════════════════════════════════════════ */}
-      <footer id="about" className="bg-[#050a12] text-slate-400 border-t border-slate-800 text-xs py-14">
+      <footer id="about" className="bg-slate-100/90 text-slate-600 border-t border-slate-200 text-xs py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-slate-800/80">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-slate-200">
 
             {/* Left 2 Cols: Brand info */}
             <div className="col-span-2 space-y-3">
               <div className="flex items-center gap-3">
                 <SMKCLogo size={36} />
                 <div>
-                  <span className="font-display font-extrabold text-white text-base tracking-tight block">
+                  <span className="font-display font-extrabold text-slate-900 text-base tracking-tight block">
                     NAGAR-NETRA
                   </span>
-                  <span className="text-[11px] text-teal-400">
+                  <span className="text-[11px] text-blue-700 font-medium">
                     Network for Evidence, Tracking, Reporting & Action
                   </span>
                 </div>
               </div>
-              <p className="text-slate-400 text-xs leading-relaxed max-w-sm pt-1">
+              <p className="text-slate-600 text-xs leading-relaxed max-w-sm pt-1">
                 An advanced AI and GIS civic intelligence platform designed for Sangli-Miraj-Kupwad Municipal Corporation (SMKC) to detect, verify, and resolve public rights-of-way violations.
               </p>
               <div className="text-[11px] text-slate-500 font-mono pt-1">
@@ -1790,31 +1831,31 @@ export default function LandingPage() {
 
             {/* Navigation links */}
             <div className="space-y-2.5">
-              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Platform</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
-                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><button onClick={() => navigate('/map')} className="hover:text-white transition-colors text-left">GIS Intelligence Map</button></li>
-                <li><a href="#responsible-ai" className="hover:text-white transition-colors">Responsible AI</a></li>
+              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Platform</h4>
+              <ul className="space-y-2 text-slate-600">
+                <li><a href="#hero" className="hover:text-blue-700 transition-colors">Home</a></li>
+                <li><a href="#how-it-works" className="hover:text-blue-700 transition-colors">How It Works</a></li>
+                <li><a href="#features" className="hover:text-blue-700 transition-colors">Features</a></li>
+                <li><button onClick={() => navigate('/map')} className="hover:text-blue-700 transition-colors text-left">GIS Intelligence Map</button></li>
+                <li><a href="#responsible-ai" className="hover:text-blue-700 transition-colors">Responsible AI</a></li>
               </ul>
             </div>
 
             {/* Citizen actions */}
             <div className="space-y-2.5">
-              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Citizen Services</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => navigate('/report')} className="hover:text-white transition-colors text-left">Report Violation</button></li>
-                <li><button onClick={() => navigate('/track')} className="hover:text-white transition-colors text-left">Track Complaint</button></li>
-                <li><button onClick={() => navigate('/whatsapp-simulator')} className="hover:text-white transition-colors text-left">WhatsApp Simulator</button></li>
-                <li><button onClick={() => navigate('/login')} className="hover:text-white transition-colors text-left">Officer Login</button></li>
+              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Citizen Services</h4>
+              <ul className="space-y-2 text-slate-600">
+                <li><button onClick={() => navigate('/report')} className="hover:text-blue-700 transition-colors text-left">Report Violation</button></li>
+                <li><button onClick={() => navigate('/track')} className="hover:text-blue-700 transition-colors text-left">Track Complaint</button></li>
+                <li><button onClick={() => navigate('/whatsapp-simulator')} className="hover:text-blue-700 transition-colors text-left">WhatsApp Simulator</button></li>
+                <li><button onClick={() => navigate('/login')} className="hover:text-blue-700 transition-colors text-left">Officer Login</button></li>
               </ul>
             </div>
 
             {/* Legal / Authority */}
             <div className="space-y-2.5">
-              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Transparency</h4>
-              <ul className="space-y-2 text-slate-400">
+              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Transparency</h4>
+              <ul className="space-y-2 text-slate-600">
                 <li><span className="text-slate-500">Citizen Privacy Policy</span></li>
                 <li><span className="text-slate-500">Terms of Enforcement</span></li>
                 <li><span className="text-slate-500">Open Data Guidelines</span></li>
@@ -1828,8 +1869,13 @@ export default function LandingPage() {
             <div>
               © 2026 NAGAR-NETRA. Sangli-Miraj-Kupwad Municipal Corporation (SMKC).
             </div>
-            <div className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-amber-400 font-mono text-[10px]">
-              PROTOTYPE / DEMONSTRATION PLATFORM FOR SMKC
+            <div className="flex items-center gap-3 text-slate-500 text-[11px]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>Municipal Enforcement Cloud · Active</span>
+              </span>
+              <span className="text-slate-300">·</span>
+              <span>All Civic Rights Reserved</span>
             </div>
           </div>
         </div>
