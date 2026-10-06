@@ -127,17 +127,29 @@ export default function App() {
         <Route path="/login"              element={<LoginPage />} />
         <Route path="/register"           element={<RegisterPage />} />
         <Route path="/forgot-password"    element={<ForgotPasswordPage />} />
+        <Route path="/track"              element={<TrackComplaintPage />} />
         <Route path="/citizen/track"      element={<TrackComplaintPage />} />
-        <Route path="/unauthorized"       element={<UnauthorizedPage />} />
-
-        {/* Public report (unauthenticated) */}
-        <Route path="/citizen/report-new" element={
-          <div className="min-h-screen bg-slate-100 p-6">
+        <Route path="/report"             element={
+          <div className="min-h-screen bg-slate-100 p-4 sm:p-6">
             <div className="max-w-2xl mx-auto">
               <ReportForm />
             </div>
           </div>
         } />
+        <Route path="/citizen/report-new" element={
+          <div className="min-h-screen bg-slate-100 p-4 sm:p-6">
+            <div className="max-w-2xl mx-auto">
+              <ReportForm />
+            </div>
+          </div>
+        } />
+        <Route path="/whatsapp-simulator" element={<WhatsAppSimulatorPage />} />
+        <Route path="/map" element={
+          <div className="min-h-screen bg-slate-900 text-white">
+            <MapPage title="SMKC GIS Case Map" />
+          </div>
+        } />
+        <Route path="/unauthorized"       element={<UnauthorizedPage />} />
 
         {/* ── Role redirect ── */}
         <Route path="/dashboard" element={<RoleRedirect />} />

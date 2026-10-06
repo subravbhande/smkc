@@ -1,792 +1,1836 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, Map, Brain, Camera, FileText,
-  CheckCircle, Activity, Database, Bell, ChevronRight, Zap,
-  TrendingUp, Shield, Phone, MessageSquare, AlertCircle, Eye,
-  Users, Clock, Star, Award, Menu, X, MapPin
+  ArrowRight, Search, Shield, MapPin, Brain, Camera, FileText,
+  CheckCircle, Activity, Database, ChevronRight, Zap,
+  TrendingUp, Phone, MessageSquare, AlertCircle, Eye,
+  Users, Clock, Menu, X, CheckCheck, Layers, FileCheck,
+  Landmark, Smartphone, ShieldCheck, Scale, ExternalLink,
+  AlertTriangle, ArrowUpRight, BarChart3, Radio, Sparkles
 } from 'lucide-react';
 import SMKCLogo from '../components/SMKCLogo';
 
-/* ── Animated counter ── */
-function CountUp({ target, suffix = '', duration = 2000 }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !started.current) {
-        started.current = true;
-        let s = 0;
-        const step = target / (duration / 16);
-        const timer = setInterval(() => {
-          s += step;
-          if (s >= target) { setCount(target); clearInterval(timer); }
-          else setCount(Math.floor(s));
-        }, 16);
-      }
-    }, { threshold: 0.4 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [target, duration]);
-  return <span ref={ref}>{count}{suffix}</span>;
-}
-
-function useReveal() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
-    }, { threshold: 0.1 });
-    const el = ref.current;
-    if (el) obs.observe(el);
-    return () => { if (el) obs.unobserve(el); };
-  }, []);
-  return ref;
-}
-
-function Particle({ style }) { return <div className="particle" style={style} />; }
-const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
-  width: `${Math.random() * 5 + 2}px`,
-  height: `${Math.random() * 5 + 2}px`,
-  left: `${Math.random() * 100}%`,
-  bottom: `${Math.random() * 40}%`,
-  background: i % 3 === 0 ? 'rgba(96,165,250,0.7)' : i % 3 === 1 ? 'rgba(45,212,191,0.6)' : 'rgba(167,139,250,0.5)',
-  '--duration': `${Math.random() * 4 + 3}s`,
-  '--delay': `${Math.random() * 5}s`,
-  '--x-drift': `${(Math.random() - 0.5) * 100}px`,
-}));
-
-const FEATURES = [
-  { icon: Brain,       title: 'AI-Powered Detection',    desc: 'YOLOv8 hoarding & encroachment detection with confidence scoring and permit cross-check', color: '#7c3aed' },
-  { icon: Map,         title: 'Live GIS Mapping',        desc: 'Real-time case mapping on OpenStreetMap with zone-wise hotspot analysis', color: '#1d4ed8' },
-  { icon: Camera,      title: 'Geo-tagged Evidence',     desc: 'Photo & video evidence with GPS coordinates, timestamp and OCR text extraction', color: '#0d9488' },
-  { icon: CheckCircle, title: 'Field Verification',      desc: 'Trained officers verify every report on-site before any legal action is taken', color: '#16a34a' },
-  { icon: FileText,    title: 'Digital Enforcement',     desc: 'Generate, preview, and serve enforcement notices digitally with legal references', color: '#ca8a04' },
-  { icon: Activity,    title: 'Action Tracking',         desc: 'Before/after photo evidence comparison and real-time removal status tracking', color: '#dc2626' },
-  { icon: Database,    title: 'Repeat Offender Intel',   desc: 'Historical location intelligence — automatically flag repeat violations at same spot', color: '#9d174d' },
-  { icon: Bell,        title: 'Multi-channel Alerts',    desc: 'WhatsApp, in-app and email notifications for officers, supervisors & complainants', color: '#0369a1' },
+// ─── Hero interactive demo data ─────────────────────────────────────
+const HERO_CASES = [
+  {
+    id: 'NNT-2026-004271',
+    type: 'Potential Hoarding',
+    location: 'Sangli-Miraj Road, Near ROB',
+    ward: 'Sangli',
+    coords: '16.8524° N, 74.5815° E',
+    confidence: 94,
+    ocr: 'ABC DEVELOPERS',
+    status: 'Field Verification',
+    statusColor: '#d97706',
+    statusBg: '#fef3c7',
+    x: '38%',
+    y: '42%',
+    priority: 'High',
+  },
+  {
+    id: 'NNT-2026-004265',
+    type: 'Public Encroachment',
+    location: 'Kupwad MIDC Road',
+    ward: 'Kupwad',
+    coords: '16.8200° N, 74.6300° E',
+    confidence: 88,
+    ocr: 'TEMPORARY SHED',
+    status: 'Notice Issued',
+    statusColor: '#dc2626',
+    statusBg: '#fee2e2',
+    x: '68%',
+    y: '65%',
+    priority: 'Critical',
+  },
+  {
+    id: 'NNT-2026-004240',
+    type: 'Roadside Obstruction',
+    location: 'Civil Hospital Chowk, Miraj',
+    ward: 'Miraj',
+    coords: '16.8300° N, 74.6450° E',
+    confidence: 91,
+    ocr: 'COMMERCIAL BOARD',
+    status: 'Closed · Resolved',
+    statusColor: '#16a34a',
+    statusBg: '#dcfce7',
+    x: '55%',
+    y: '28%',
+    priority: 'Resolved',
+  },
 ];
 
-const WORKFLOW = [
-  { step: 'REPORT',  desc: 'Citizen reports with photo, location & mobile number', icon: '📱', color: '#1d4ed8' },
-  { step: 'DETECT',  desc: 'AI analyzes image & flags violation with confidence score', icon: '🤖', color: '#7c3aed' },
-  { step: 'VERIFY',  desc: 'Field officer conducts on-site inspection', icon: '🔍', color: '#0d9488' },
-  { step: 'NOTICE',  desc: 'Supervisor issues legal enforcement notice', icon: '📄', color: '#ca8a04' },
-  { step: 'ACTION',  desc: 'Enforcement team removes/rectifies violation', icon: '⚡', color: '#dc2626' },
-  { step: 'RESOLVE', desc: 'Case closed with before/after evidence on GIS map', icon: '✅', color: '#16a34a' },
-];
-
-const STATS = [
-  { value: 94,  suffix: '%', label: 'AI Detection Accuracy',  icon: Brain,      color: '#7c3aed' },
-  { value: 20,  suffix: '+', label: 'Active Cases Tracked',   icon: FileText,   color: '#1d4ed8' },
-  { value: 3,   suffix: '',  label: 'SMKC Zones Covered',     icon: Map,        color: '#0d9488' },
-  { value: 40,  suffix: '%', label: 'Faster Resolution',      icon: TrendingUp, color: '#16a34a' },
-];
-
-// Recent demo complaints for the marquee
-const RECENT_COMPLAINTS = [
-  { id: 'NNT-2026-004271', type: 'Illegal Hoarding', location: 'Sangli-Miraj Road', time: '2 hrs ago',  status: 'Field Verification' },
-  { id: 'NNT-2026-004265', type: 'Encroachment',     location: 'Madhavnagar Road',  time: '5 hrs ago',  status: 'Notice Issued' },
-  { id: 'NNT-2026-004254', type: 'Illegal Hoarding', location: 'Miraj Bus Stand',   time: '1 day ago',  status: 'Action Ordered' },
-  { id: 'NNT-2026-004240', type: 'Encroachment',     location: 'Kupwad MIDC Road',  time: '2 days ago', status: 'Closed' },
-  { id: 'NNT-2026-004272', type: 'Unauthorized Ad',  location: 'Court Road, Sangli', time: '30 min ago', status: 'Under Review' },
-];
-
-const STATUS_COLORS = {
-  'Under Review':       '#f59e0b',
-  'Field Verification': '#7c3aed',
-  'Notice Issued':      '#1d4ed8',
-  'Action Ordered':     '#dc2626',
-  'Closed':             '#16a34a',
+// ─── GIS Section Data ───────────────────────────────────────────────
+const GIS_WARS = {
+  all: {
+    label: 'All Wards (SMKC)',
+    active: 18,
+    highPriority: 4,
+    hotspots: 6,
+    resolved: 42,
+    cases: [
+      { id: 'NNT-4271', type: 'Illegal Hoarding', ward: 'Sangli', top: '35%', left: '32%', status: 'Verification' },
+      { id: 'NNT-4265', type: 'Encroachment', ward: 'Kupwad', top: '62%', left: '70%', status: 'Notice' },
+      { id: 'NNT-4252', type: 'Banner', ward: 'Miraj', top: '48%', left: '55%', status: 'Active' },
+      { id: 'NNT-4240', type: 'Hoarding', ward: 'Miraj', top: '25%', left: '58%', status: 'Resolved' },
+      { id: 'NNT-4231', type: 'Encroachment', ward: 'Sangli', top: '50%', left: '25%', status: 'Resolved' },
+    ]
+  },
+  sangli: {
+    label: 'Sangli Ward',
+    active: 8,
+    highPriority: 2,
+    hotspots: 3,
+    resolved: 19,
+    cases: [
+      { id: 'NNT-4271', type: 'Illegal Hoarding', ward: 'Sangli', top: '35%', left: '32%', status: 'Verification' },
+      { id: 'NNT-4231', type: 'Encroachment', ward: 'Sangli', top: '50%', left: '25%', status: 'Resolved' },
+    ]
+  },
+  miraj: {
+    label: 'Miraj Ward',
+    active: 6,
+    highPriority: 1,
+    hotspots: 2,
+    resolved: 15,
+    cases: [
+      { id: 'NNT-4252', type: 'Banner', ward: 'Miraj', top: '48%', left: '55%', status: 'Active' },
+      { id: 'NNT-4240', type: 'Hoarding', ward: 'Miraj', top: '25%', left: '58%', status: 'Resolved' },
+    ]
+  },
+  kupwad: {
+    label: 'Kupwad Ward',
+    active: 4,
+    highPriority: 1,
+    hotspots: 1,
+    resolved: 8,
+    cases: [
+      { id: 'NNT-4265', type: 'Encroachment', ward: 'Kupwad', top: '62%', left: '70%', status: 'Notice' },
+    ]
+  }
 };
+
+// ─── 7-Step Pipeline Data ───────────────────────────────────────────
+const PIPELINE_STEPS = [
+  {
+    num: '01',
+    title: 'REPORT',
+    sub: 'Citizen or Officer',
+    desc: 'Capture evidence photo, description, and auto GPS coordinates via Web Portal or WhatsApp Bot.',
+    icon: Camera,
+    color: '#0d9488',
+    detail: 'Tamper-evident geo-tagging, mobile number verification constraint, and instant case ID generation.'
+  },
+  {
+    num: '02',
+    title: 'AI ANALYSIS',
+    sub: 'Vision & OCR Pipeline',
+    desc: 'Computer vision classifies hoardings and encroachments; OCR extracts advertiser names and contacts.',
+    icon: Brain,
+    color: '#3b82f6',
+    detail: 'Confidence scoring (e.g. 94%), bounding box coordinates, and preliminary risk stratification.'
+  },
+  {
+    num: '03',
+    title: 'GIS MAPPING',
+    sub: 'Spatial Intelligence',
+    desc: 'Pinpoints exact jurisdiction ward, plots hotspot density, and checks for prior repeat violations.',
+    icon: Layers,
+    color: '#6366f1',
+    detail: 'Layered onto OpenStreetMap & SMKC zone boundaries for city-wide geospatial surveillance.'
+  },
+  {
+    num: '04',
+    title: 'OFFICER VERIFY',
+    sub: 'Human-in-the-Loop',
+    desc: 'Authorized field officer inspects on-site, validates AI recommendations, and uploads ground proof.',
+    icon: ShieldCheck,
+    color: '#0284c7',
+    detail: 'Human accountability guarantee: No enforcement is triggered without designated officer sign-off.'
+  },
+  {
+    num: '05',
+    title: 'NOTICE ISSUED',
+    sub: 'Digital Due Process',
+    desc: 'Official municipal notice generated with legal compliance deadlines (e.g. 48 hours for removal).',
+    icon: FileCheck,
+    color: '#d97706',
+    detail: 'Automated notice reference numbering (e.g. SMKC-NOT-2026-0692) linked permanently to case history.'
+  },
+  {
+    num: '06',
+    title: 'ENFORCEMENT',
+    sub: 'Field Demolition/Removal',
+    desc: 'Municipal squad dispatched if deadline elapses without owner compliance; structure removed safely.',
+    icon: Zap,
+    color: '#dc2626',
+    detail: 'Demolition logs, penalty assessment, and removal squad activity recorded with time stamps.'
+  },
+  {
+    num: '07',
+    title: 'RESOLUTION',
+    sub: 'Verified Closure',
+    desc: 'Before/after geo-tagged evidence uploaded; case permanently closed with tamper-proof audit trail.',
+    icon: CheckCircle,
+    color: '#16a34a',
+    detail: 'Citizen receives resolution notification; public sidewalk or sightline restored to the city.'
+  },
+];
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const featRef  = useReveal();
-  const workRef  = useReveal();
-  const statsRef = useReveal();
-  const ctaRef   = useReveal();
+  const [scrolled, setScrolled] = useState(false);
+  const [activeHeroCase, setActiveHeroCase] = useState(HERO_CASES[0]);
+  const [activePipelineIdx, setActivePipelineIdx] = useState(1);
+  const [selectedWard, setSelectedWard] = useState('all');
+  const [beforeAfterMode, setBeforeAfterMode] = useState('after');
+
+  // Handle navbar transparency on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden" style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
 
-      {/* ── Fixed Header ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10"
-        style={{ background: 'rgba(8,15,26,0.95)', backdropFilter: 'blur(24px)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <SMKCLogo size={32} />
-            <div>
-              <span className="font-display font-bold text-white tracking-wide text-base sm:text-lg">NAGAR-NETRA</span>
-              <div className="text-slate-500 text-[10px] tracking-widest uppercase hidden sm:block">SMKC Civic Enforcement</div>
-            </div>
-          </div>
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7 text-sm text-slate-400">
-            <a href="#features"  className="hover:text-teal-400 transition-colors">Features</a>
-            <a href="#workflow"  className="hover:text-teal-400 transition-colors">How It Works</a>
-            <a href="#stats"     className="hover:text-teal-400 transition-colors">Impact</a>
-            <Link to="/citizen/track" className="hover:text-teal-400 transition-colors">Track Complaint</Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link to="/citizen/report-new"
-              className="btn btn-sm hidden sm:flex"
-              style={{ background: 'rgba(13,148,136,0.18)', color: '#2dd4bf', border: '1px solid rgba(13,148,136,0.35)' }}>
-              📸 Report
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4: PREMIUM STICKY NAVBAR
+          ═══════════════════════════════════════════════════════════════ */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-[#0a1628]/95 backdrop-blur-md border-b border-slate-700/60 shadow-lg py-3'
+            : 'bg-[#0a1628]/85 backdrop-blur-sm border-b border-slate-800/80 py-4'
+        }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            {/* Left: Brand + Official SMKC Subtitle */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="p-1 rounded-full bg-white/10 ring-1 ring-white/20 group-hover:ring-teal-400 transition-all">
+                <SMKCLogo size={36} />
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="font-display font-extrabold text-xl text-white tracking-tight">
+                    NAGAR-NETRA
+                  </span>
+                  <span className="hidden sm:inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    SMKC
+                  </span>
+                </div>
+                <span className="text-[11px] text-slate-300 font-medium tracking-wide">
+                  SMKC Civic Intelligence Platform
+                </span>
+              </div>
             </Link>
-            <Link to="/login" className="btn btn-primary btn-sm hidden sm:flex">Officer Login</Link>
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors">
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+
+            {/* Middle: Desktop Navigation Links */}
+            <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
+              <a href="#hero" className="hover:text-white transition-colors">Home</a>
+              <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+              <a href="#features" className="hover:text-white transition-colors">Features</a>
+              <a href="#gis-intelligence" className="hover:text-white transition-colors">GIS Intelligence</a>
+              <a href="#responsible-ai" className="hover:text-white transition-colors">Responsible AI</a>
+              <a href="#about" className="hover:text-white transition-colors">About</a>
+            </div>
+
+            {/* Right: Action Buttons */}
+            <div className="hidden sm:flex items-center gap-3">
+              <button
+                onClick={() => navigate('/track')}
+                className="px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-200 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all flex items-center gap-1.5">
+                <Search size={14} className="text-teal-400" /> Track Complaint
+              </button>
+              <button
+                onClick={() => navigate('/report')}
+                className="px-4 py-2 text-xs font-bold rounded-lg text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-md shadow-teal-900/30 transition-all flex items-center gap-1.5">
+                <Camera size={14} /> Report Violation
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-all"
+                title="Officer Login">
+                <Shield size={17} />
+              </button>
+            </div>
+
+            {/* Mobile Hamburger Menu Button */}
+            <div className="flex sm:hidden items-center gap-2">
+              <button
+                onClick={() => navigate('/report')}
+                className="px-2.5 py-1.5 text-xs font-bold rounded-lg text-white bg-teal-600">
+                Report
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg text-slate-300 hover:text-white bg-slate-800"
+                aria-label="Toggle Menu">
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Mobile dropdown menu */}
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 animate-fade-in"
-            style={{ background: 'rgba(8,15,26,0.98)' }}>
-            <div className="px-4 py-4 space-y-1">
-              {[
-                { href: '#features', label: 'Features' },
-                { href: '#workflow', label: 'How It Works' },
-                { href: '#stats', label: 'Impact' },
-              ].map(item => (
-                <a key={item.label} href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
-                  <ChevronRight size={14} className="text-teal-500" />
-                  {item.label}
-                </a>
-              ))}
-              <div className="pt-2 flex flex-col gap-2">
-                <Link to="/citizen/track"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn w-full justify-center"
-                  style={{ background: 'rgba(13,148,136,0.18)', color: '#2dd4bf', border: '1px solid rgba(13,148,136,0.35)' }}>
-                  🔍 Track Complaint
-                </Link>
-                <Link to="/citizen/report-new"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn w-full justify-center"
-                  style={{ background: 'linear-gradient(135deg,#1d4ed8,#0d9488)', color: 'white' }}>
-                  📸 Report a Violation
-                </Link>
-                <Link to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn btn-primary w-full justify-center">
-                  Officer Login
-                </Link>
-              </div>
+          <div className="sm:hidden bg-[#0a1628] border-b border-slate-800 px-5 pt-3 pb-6 space-y-3 animate-slide-in">
+            <div className="flex flex-col space-y-2.5 text-sm font-medium text-slate-300 pt-2 border-t border-slate-800/80">
+              <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">Home</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">How It Works</a>
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">Features</a>
+              <a href="#gis-intelligence" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">GIS Intelligence</a>
+              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-1.5 hover:text-white">About SMKC</a>
+            </div>
+            <div className="pt-3 border-t border-slate-800 flex flex-col gap-2.5">
+              <button
+                onClick={() => { setMobileMenuOpen(false); navigate('/report'); }}
+                className="w-full py-2.5 rounded-lg text-xs font-bold text-white bg-teal-600 flex items-center justify-center gap-2">
+                <Camera size={14} /> Report a Violation
+              </button>
+              <button
+                onClick={() => { setMobileMenuOpen(false); navigate('/track'); }}
+                className="w-full py-2.5 rounded-lg text-xs font-semibold text-slate-200 bg-slate-800 border border-slate-700 flex items-center justify-center gap-2">
+                <Search size={14} className="text-teal-400" /> Track Complaint
+              </button>
+              <button
+                onClick={() => { setMobileMenuOpen(false); navigate('/whatsapp-simulator'); }}
+                className="w-full py-2.5 rounded-lg text-xs font-semibold text-green-300 bg-green-950/60 border border-green-800/60 flex items-center justify-center gap-2">
+                <MessageSquare size={14} className="text-green-400" /> WhatsApp Reporting Demo
+              </button>
+              <button
+                onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
+                className="w-full py-2 text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5">
+                <Shield size={14} /> Official / Officer Portal Login
+              </button>
             </div>
           </div>
         )}
-      </header>
+      </nav>
 
-      {/* ── Hero Section ── */}
-      <section className="pt-16 min-h-screen flex items-center relative overflow-hidden hero-gradient">
-        <div className="scan-line" />
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '36px 36px' }} />
-        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(29,78,216,0.14) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-1/4 left-1/5 w-96 h-96 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(13,148,136,0.10) 0%, transparent 70%)' }} />
-        <div className="absolute top-1/3 left-2/3 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)' }} />
-        {PARTICLES.map((p, i) => <Particle key={i} style={p} />)}
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 5, 6 & 7: HERO SECTION + AI/GIS COMMAND VISUAL
+          ═══════════════════════════════════════════════════════════════ */}
+      <section
+        id="hero"
+        className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-[#070e1a] text-white">
+        {/* Subtle grid pattern & background atmosphere */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-20"
+          style={{
+            backgroundImage: `radial-gradient(circle at 50% 30%, rgba(13,148,136,0.25) 0%, transparent 65%),
+                              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
+            backgroundSize: '100% 100%, 48px 48px, 48px 48px',
+          }}
+        />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
 
-          {/* Left — Copy */}
-          <div className="animate-fade-in">
-            {/* Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-6"
-              style={{ background: 'rgba(20,184,166,0.12)', color: '#5eead4', border: '1px solid rgba(20,184,166,0.28)' }}>
-              <span className="w-2 h-2 rounded-full bg-teal-400 pulse-dot" />
-              🚀 Prototype v1.0 · Sangli-Miraj-Kupwad Municipal Corporation
-            </div>
-
-            <h1 className="text-5xl lg:text-7xl font-bold text-white font-display leading-[1.04] mb-3">
-              NAGAR-<br />
-              <span className="gradient-text">NETRA</span>
-            </h1>
-            <p className="text-xl text-slate-300 font-semibold mb-1">AI + GIS Powered Civic Enforcement</p>
-            <p className="text-2xl text-teal-400 font-display font-bold mb-6 animate-slide-in">
-              Report. Detect. Verify. Resolve.
-            </p>
-            <p className="text-slate-400 text-base leading-relaxed mb-8 max-w-lg">
-              SMKC's unified platform to detect, report, track and resolve illegal hoardings and
-              public-space encroachments through AI-powered evidence analysis and digital enforcement workflows.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-8">
-              <Link to="/citizen/report-new"
-                className="btn btn-lg animate-fade-in"
-                style={{ background: 'linear-gradient(135deg,#1d4ed8,#0d9488)', color: 'white', boxShadow: '0 4px 24px rgba(29,78,216,0.4)' }}>
-                <Camera size={18} />
-                Report a Violation
-                <ArrowRight size={18} />
-              </Link>
-              <Link to="/citizen/track"
-                className="btn btn-lg animate-fade-in"
-                style={{ background: 'rgba(255,255,255,0.07)', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.15)' }}>
-                🔍 Track My Complaint
-              </Link>
-            </div>
-
-            {/* Quick stats chips */}
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: '94% AI Accuracy',   icon: '🤖' },
-                { label: 'Real-time GIS',     icon: '🗺️' },
-                { label: 'Digital Notices',   icon: '📄' },
-                { label: 'WhatsApp Reports',  icon: '💬' },
-              ].map(chip => (
-                <div key={chip.label}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs text-slate-400"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <span>{chip.icon}</span>
-                  <span>{chip.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — Live Dashboard Preview */}
-          <div className="hidden lg:block animate-fade-in-right">
-            <div className="rounded-2xl p-5 border border-white/10 relative"
-              style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(16px)' }}>
-              {/* Window chrome */}
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-3 h-3 rounded-full bg-red-400/80" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
-                <div className="w-3 h-3 rounded-full bg-green-400/80" />
-                <span className="ml-3 text-slate-500 text-xs font-mono">NAGAR-NETRA · Live Dashboard</span>
-                <div className="ml-auto flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-                  <span className="text-green-400 text-xs">Live</span>
-                </div>
+            {/* Left 7 Columns: Editorial Headline, Tagline, CTAs */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              {/* Government Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-teal-950/80 text-teal-300 border border-teal-500/30">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+                SMKC CIVIC INTELLIGENCE PLATFORM
               </div>
 
-              {/* Stats row */}
-              <div className="grid grid-cols-3 gap-3 mb-4 stagger-children">
-                {[
-                  { val: '20', label: 'Total Cases',   color: '#1d4ed8' },
-                  { val: '7',  label: 'High Priority', color: '#dc2626' },
-                  { val: '8',  label: 'Resolved',      color: '#16a34a' },
-                ].map(({ val, label, color }) => (
-                  <div key={label} className="p-3 rounded-xl text-center"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                    <div className="text-2xl font-bold font-display" style={{ color }}>{val}</div>
-                    <div className="text-slate-400 text-xs mt-0.5">{label}</div>
-                  </div>
-                ))}
+              {/* Main Headline */}
+              <div className="space-y-2">
+                <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.08]">
+                  Digital Eyes.<br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-400">
+                    Verified Action.
+                  </span>
+                </h1>
+                <p className="font-display font-semibold text-lg sm:text-xl text-teal-200/90 tracking-wide pt-1">
+                  See civic violations. Verify them with evidence. Resolve them faster.
+                </p>
               </div>
 
-              {/* Recent complaints live feed */}
-              <div className="p-3 rounded-xl mb-3"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-xs font-semibold">Live Case Feed</span>
-                  <div className="flex items-center gap-1 text-green-400 text-[10px]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
-                    Real-time
+              {/* Explanatory Paragraph */}
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                NAGAR-NETRA connects citizens, field officers and municipal authorities through AI-powered detection, geo-tagged evidence, GIS mapping and end-to-end enforcement workflows.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <button
+                  onClick={() => navigate('/report')}
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-lg shadow-teal-950/40 transition-all flex items-center justify-center gap-2 group">
+                  <span>Report a Violation</span>
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <button
+                  onClick={() => navigate('/track')}
+                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-slate-200 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 transition-all flex items-center justify-center gap-2">
+                  <Search size={15} className="text-teal-400" />
+                  <span>Track Complaint</span>
+                </button>
+
+                <button
+                  onClick={() => navigate('/whatsapp-simulator')}
+                  className="px-5 py-3.5 rounded-xl font-semibold text-sm text-green-300 bg-green-950/70 hover:bg-green-900/80 border border-green-700/60 transition-all flex items-center justify-center gap-2">
+                  <MessageSquare size={15} className="text-green-400" />
+                  <span>Report via WhatsApp</span>
+                </button>
+              </div>
+
+              {/* Trust Subtext */}
+              <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
+                <Landmark size={14} className="text-teal-400 flex-shrink-0" />
+                <span>Built for Sangli-Miraj-Kupwad Municipal Corporation (SMKC)</span>
+              </div>
+            </div>
+
+            {/* Right 5 Columns: Sophisticated GIS + AI Command Display */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-2xl bg-gradient-to-b from-[#0c1829] to-[#081220] border border-slate-700/70 shadow-2xl overflow-hidden p-4 sm:p-5">
+
+                {/* Command Canvas Top Bar */}
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="font-mono text-[11px] text-teal-300 font-semibold uppercase tracking-wider">
+                      GIS RADAR · LIVE
+                    </span>
                   </div>
+                  <span className="font-mono text-[11px] text-slate-400">
+                    SANGLI JURISDICTION
+                  </span>
                 </div>
-                {RECENT_COMPLAINTS.slice(0, 3).map((c) => (
-                  <div key={c.id} className="flex items-center gap-2.5 py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                      style={{ background: STATUS_COLORS[c.status] || '#64748b' }} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white text-xs font-semibold truncate">{c.type}</div>
-                      <div className="text-slate-500 text-[10px] truncate">{c.location}</div>
+
+                {/* Stylized City Vector Map Area */}
+                <div className="relative h-64 sm:h-72 w-full rounded-xl bg-[#060c16] border border-slate-800/80 overflow-hidden">
+                  {/* Subtle Grid Vectors */}
+                  <svg className="absolute inset-0 w-full h-full opacity-35" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <pattern id="cityGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#0d9488" strokeWidth="0.5" strokeOpacity="0.4" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#cityGrid)" />
+                    {/* Simulated Arterial Roads / Krishna River line */}
+                    <path d="M 0,90 Q 90,140 180,110 T 360,180" fill="none" stroke="#0284c7" strokeWidth="2.5" strokeOpacity="0.4" />
+                    <path d="M 40,240 L 160,80 L 320,130" fill="none" stroke="#475569" strokeWidth="1.5" strokeDasharray="3,3" />
+                  </svg>
+
+                  {/* Ward Labels */}
+                  <div className="absolute top-4 left-6 text-[10px] font-mono text-slate-500 font-bold tracking-wider">
+                    ZONE 1 · SANGLI
+                  </div>
+                  <div className="absolute bottom-4 left-10 text-[10px] font-mono text-slate-500 font-bold tracking-wider">
+                    ZONE 2 · KUPWAD MIDC
+                  </div>
+                  <div className="absolute top-12 right-6 text-[10px] font-mono text-slate-500 font-bold tracking-wider">
+                    ZONE 3 · MIRAJ
+                  </div>
+
+                  {/* Interactive Map Markers */}
+                  {HERO_CASES.map((item) => {
+                    const isSelected = activeHeroCase.id === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => setActiveHeroCase(item)}
+                        style={{ top: item.y, left: item.x }}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer focus:outline-none"
+                        aria-label={`View Case ${item.id}`}>
+                        <span
+                          className={`absolute -inset-2 rounded-full opacity-75 animate-ping ${
+                            isSelected ? 'bg-teal-400' : 'bg-slate-500'
+                          }`}
+                        />
+                        <div
+                          className={`relative w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] shadow-lg transition-transform ${
+                            isSelected
+                              ? 'bg-teal-400 text-slate-950 ring-4 ring-teal-400/30 scale-125'
+                              : 'bg-slate-700 text-white hover:scale-110'
+                          }`}>
+                          📍
+                        </div>
+                      </button>
+                    );
+                  })}
+
+                  {/* Detection Bounding Box Graphic Overlay on Map */}
+                  <div className="absolute top-6 right-6 pointer-events-none border border-teal-500/60 bg-teal-950/20 rounded p-1.5 backdrop-blur-xs text-[9px] font-mono text-teal-300">
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                      <span>AI DETECTED · {activeHeroCase.confidence}% CONF</span>
                     </div>
-                    <div className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
-                      style={{ background: `${STATUS_COLORS[c.status] || '#64748b'}22`, color: STATUS_COLORS[c.status] || '#94a3b8' }}>
-                      {c.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Zone bar chart */}
-              <div className="p-3 rounded-xl mb-3"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="text-slate-400 text-xs mb-3 font-semibold">Zone Activity</div>
-                {[
-                  { zone: 'Sangli City', pct: 45, color: '#dc2626' },
-                  { zone: 'Miraj',       pct: 30, color: '#ea580c' },
-                  { zone: 'Kupwad',      pct: 25, color: '#ca8a04' },
-                ].map(z => (
-                  <div key={z.zone} className="mb-2">
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
-                      <span>{z.zone}</span>
-                      <span style={{ color: z.color }}>{z.pct}%</span>
-                    </div>
-                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${z.pct}%`, background: z.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Map preview */}
-              <div className="p-3 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-white text-xs font-semibold">GIS Map · Live</div>
-                    <div className="text-slate-400 text-[10px]">20 cases across SMKC</div>
-                  </div>
-                  <div className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-                </div>
-              </div>
-
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -right-4 px-4 py-3 animate-float rounded-xl"
-                style={{ background: 'rgba(13,148,136,0.18)', border: '1px solid rgba(13,148,136,0.35)', backdropFilter: 'blur(8px)' }}>
-                <div className="text-teal-400 text-sm font-bold">🤖 AI Active</div>
-                <div className="text-slate-400 text-xs">YOLOv8 · Running</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-600 animate-float">
-          <span className="text-xs tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-slate-600 to-transparent" />
-        </div>
-      </section>
-
-      {/* ── Citizen Identity Bar ── */}
-      <section className="py-5 border-y"
-        style={{ background: 'linear-gradient(135deg,#f0fdf4,#ecfdf5)', borderColor: '#bbf7d0' }}>
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-              <Shield size={18} className="text-green-700" />
-            </div>
-            <div>
-              <div className="font-bold text-green-900 text-sm">Verified Complaints Only — Your Identity Matters</div>
-              <div className="text-green-700 text-xs">Mobile number, name and photo evidence are mandatory to file a complaint</div>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {[
-              { icon: Phone, label: 'Mobile No. Required' },
-              { icon: Users, label: 'Full Name Required' },
-              { icon: Camera, label: 'Photo Evidence Required' },
-              { icon: MapPin, label: 'GPS Location Required' },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-                style={{ background: 'rgba(22,163,74,0.12)', color: '#15803d', border: '1px solid rgba(22,163,74,0.25)' }}>
-                <Icon size={11} />
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats Section ── */}
-      <section id="stats" className="py-16 bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <div ref={statsRef} className="reveal grid grid-cols-2 md:grid-cols-4 gap-6">
-            {STATS.map(({ value, suffix, label, icon: Icon, color }) => (
-              <div key={label} className="text-center p-6 rounded-2xl card card-hover group">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110 duration-300"
-                  style={{ background: `${color}15` }}>
-                  <Icon size={26} style={{ color }} />
-                </div>
-                <div className="text-4xl font-bold font-display mb-1" style={{ color }}>
-                  <CountUp target={value} suffix={suffix} />
-                </div>
-                <div className="text-slate-500 text-sm">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How to Report (Citizen Guide) ── */}
-      <section className="py-20" style={{ background: 'linear-gradient(135deg,#f8fafc,#f0fdf4)' }}>
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-4"
-              style={{ background: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' }}>
-              <Phone size={12} /> For Citizens
-            </div>
-            <h2 className="text-4xl font-bold text-slate-900 font-display mb-3">How to File a Complaint</h2>
-            <p className="text-slate-500 max-w-xl mx-auto">Your identity helps us take action. Provide accurate information and we'll keep you updated at every step.</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Steps */}
-            <div className="space-y-4">
-              {[
-                {
-                  step: '1', icon: '📸', title: 'Take a Photo',
-                  desc: 'Photograph the violation clearly — hoarding, banner, or encroachment. Video evidence is also accepted.',
-                  required: null, badge: null,
-                },
-                {
-                  step: '2', icon: '👤', title: 'Enter Your Details',
-                  desc: 'Provide your full name and a valid 10-digit mobile number. This lets us send you status updates via SMS/WhatsApp.',
-                  required: ['Full Name', 'Mobile Number'],
-                  badge: 'Mandatory for Accountability',
-                },
-                {
-                  step: '3', icon: '📍', title: 'Mark the Location',
-                  desc: 'Use GPS auto-detect or manually type the address. Accurate location ensures officers reach the right spot.',
-                  required: ['GPS / Address'],
-                  badge: null,
-                },
-                {
-                  step: '4', icon: '✅', title: 'Submit & Track',
-                  desc: 'Submit and receive a unique Case ID. Track your complaint status online or via WhatsApp anytime.',
-                  required: null, badge: null,
-                },
-              ].map(item => (
-                <div key={item.step} className="card p-5 flex gap-4">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0 font-bold text-white"
-                    style={{ background: 'linear-gradient(135deg,#1d4ed8,#0d9488)', minWidth: 40 }}>
-                    {item.step}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-lg">{item.icon}</span>
-                      <span className="font-bold text-slate-900">{item.title}</span>
-                      {item.badge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">
-                          ⚠ {item.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
-                    {item.required && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {item.required.map(r => (
-                          <span key={r} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
-                            ✓ {r}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
-              ))}
-            </div>
 
-            {/* WhatsApp CTA Card */}
-            <div className="space-y-5">
-              {/* WhatsApp Report Card */}
-              <div className="rounded-2xl p-6 text-white overflow-hidden relative"
-                style={{ background: 'linear-gradient(135deg,#128c7e,#25d366)', boxShadow: '0 8px 32px rgba(37,211,102,0.25)' }}>
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10"
-                  style={{ background: 'white', transform: 'translate(30%,-30%)' }} />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <MessageSquare size={24} color="white" />
+                {/* Active Case Telemetry Panel */}
+                <div className="mt-3.5 p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-white text-sm">
+                        {activeHeroCase.id}
+                      </span>
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                        style={{ background: activeHeroCase.statusBg, color: activeHeroCase.statusColor }}>
+                        {activeHeroCase.status}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] text-teal-400 font-semibold">
+                      AI: {activeHeroCase.confidence}%
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-slate-800 text-slate-300">
+                    <div>
+                      <span className="text-slate-500 block text-[10px]">VIOLATION:</span>
+                      <span className="font-semibold text-white">{activeHeroCase.type}</span>
                     </div>
                     <div>
-                      <div className="font-bold text-lg">WhatsApp Reporter</div>
-                      <div className="text-green-200 text-sm">Report without downloading any app</div>
+                      <span className="text-slate-500 block text-[10px]">COORDINATES:</span>
+                      <span className="font-mono text-slate-300">{activeHeroCase.coords}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block text-[10px]">LOCATION:</span>
+                      <span className="truncate block font-medium">{activeHeroCase.location}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block text-[10px]">OCR DETECTED:</span>
+                      <span className="font-mono text-amber-300">{activeHeroCase.ocr}</span>
                     </div>
                   </div>
-                  <p className="text-green-100 text-sm mb-5 leading-relaxed">
-                    Send a photo of the violation with your location to our WhatsApp number.
-                    Our AI bot will guide you through the reporting process in simple steps — in Marathi or English.
-                  </p>
-                  <div className="grid grid-cols-2 gap-3 mb-5">
-                    {[
-                      { icon: '📸', text: 'Send Photo' },
-                      { icon: '📍', text: 'Share Location' },
-                      { icon: '📝', text: 'Describe Issue' },
-                      { icon: '✅', text: 'Get Case ID' },
-                    ].map(item => (
-                      <div key={item.text} className="flex items-center gap-2 text-sm bg-white/15 rounded-lg px-3 py-2">
-                        <span>{item.icon}</span>
-                        <span className="font-medium">{item.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-3 bg-white/20 rounded-xl px-4 py-3 text-sm">
-                    <Phone size={16} />
-                    <span className="font-mono font-bold">+91 90000 XXXXX</span>
-                    <span className="text-green-200 text-xs ml-auto">(Demo)</span>
+
+                  <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Click any marker to inspect</span>
+                    <button
+                      onClick={() => navigate('/map')}
+                      className="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1">
+                      Full Case Map <ArrowRight size={12} />
+                    </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Accountability Notice */}
-              <div className="card p-5 border-l-4" style={{ borderLeftColor: '#f59e0b' }}>
-                <div className="flex items-start gap-3">
-                  <AlertCircle size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-bold text-slate-900 mb-1">Why We Collect Your Identity</div>
-                    <ul className="text-slate-500 text-sm space-y-1.5">
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-amber-500 mt-0.5">•</span>
-                        To send SMS/WhatsApp status updates on your complaint
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-amber-500 mt-0.5">•</span>
-                        To prevent frivolous or malicious anonymous reports
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-amber-500 mt-0.5">•</span>
-                        To contact you if officers need clarification
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-amber-500 mt-0.5">•</span>
-                        Your data is used only for SMKC enforcement — not shared
-                      </li>
-                    </ul>
-                  </div>
-                </div>
               </div>
-
-              <Link to="/citizen/report-new"
-                className="btn w-full justify-center py-4 text-base font-bold"
-                style={{ background: 'linear-gradient(135deg,#1d4ed8,#0d9488)', color: 'white', boxShadow: '0 4px 20px rgba(29,78,216,0.35)' }}>
-                <Camera size={18} /> File a Complaint Now
-                <ArrowRight size={18} />
-              </Link>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* ── Workflow ── */}
-      <section id="workflow" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div ref={workRef} className="reveal text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-4"
-              style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }}>
-              Complete Enforcement Workflow
-            </div>
-            <h2 className="text-4xl font-bold text-slate-900 font-display mb-3">
-              From Report to Resolution — Fully Tracked
-            </h2>
-            <p className="text-slate-500">Every step is logged, timestamped and auditable on the GIS dashboard</p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-3">
-            {WORKFLOW.map((w, i) => (
-              <div key={w.step} className="flex items-center gap-3">
-                <div className="card card-hover p-5 text-center w-44 group cursor-default"
-                  style={{ animationDelay: `${i * 0.08}s` }}>
-                  <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300 inline-block">
-                    {w.icon}
-                  </div>
-                  <div className="font-bold text-xs font-display mb-1.5" style={{ color: w.color }}>
-                    {i + 1}. {w.step}
-                  </div>
-                  <div className="text-slate-400 text-xs leading-snug">{w.desc}</div>
-                  <div className="mt-3 h-1 rounded-full" style={{ background: `${w.color}25` }}>
-                    <div className="h-full rounded-full w-0 group-hover:w-full transition-all duration-500"
-                      style={{ background: w.color }} />
-                  </div>
-                </div>
-                {i < WORKFLOW.length - 1 && (
-                  <ChevronRight size={20} className="text-slate-300 flex-shrink-0 hidden sm:block" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Features ── */}
-      <section id="features" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div ref={featRef} className="reveal text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-4"
-              style={{ background: '#f0fdfa', color: '#0d9488', border: '1px solid #99f6e4' }}>
-              Platform Capabilities
-            </div>
-            <h2 className="text-4xl font-bold text-slate-900 font-display mb-3">
-              Built for Civic Enforcement at Scale
-            </h2>
-            <p className="text-slate-500">Every tool SMKC needs — in one intelligent, role-based platform</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
-            {FEATURES.map(f => (
-              <div key={f.title} className="card card-hover card-gradient-border p-6 group bg-white">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-                  style={{ background: `${f.color}12` }}>
-                  <f.icon size={22} style={{ color: f.color }} />
-                </div>
-                <h3 className="font-bold text-slate-900 mb-2 font-display">{f.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
-                <div className="mt-4 flex items-center gap-1 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ color: f.color }}>
-                  <span>Learn more</span>
-                  <ArrowRight size={12} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Recent Activity Ticker ── */}
-      <section className="py-4 overflow-hidden" style={{ background: '#0f172a', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex items-center gap-4 max-w-7xl mx-auto px-6">
-          <span className="text-teal-400 text-xs font-bold uppercase tracking-widest whitespace-nowrap flex-shrink-0 flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-teal-400 pulse-dot" />
-            Live Feed
-          </span>
-          <div className="flex gap-6 overflow-hidden">
-            {RECENT_COMPLAINTS.map(c => (
-              <div key={c.id} className="flex items-center gap-3 whitespace-nowrap text-xs text-slate-400 flex-shrink-0">
-                <span className="font-mono text-slate-500">{c.id}</span>
-                <span className="text-slate-300 font-medium">{c.type}</span>
-                <span className="text-slate-500">·</span>
-                <span>{c.location}</span>
-                <span className="px-2 py-0.5 rounded-full font-semibold"
-                  style={{ background: `${STATUS_COLORS[c.status] || '#64748b'}22`, color: STATUS_COLORS[c.status] || '#94a3b8' }}>
-                  {c.status}
-                </span>
-                <span className="text-slate-600">{c.time}</span>
-                <span className="w-1 h-1 rounded-full bg-slate-700" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA / Demo Roles ── */}
-      <section ref={ctaRef} className="reveal py-20 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #060d1a 0%, #0a1628 50%, #0f2240 100%)' }}>
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-        <div className="absolute top-0 left-1/4 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(29,78,216,0.18) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(13,148,136,0.14) 0%, transparent 70%)' }} />
-
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-6"
-            style={{ background: 'rgba(20,184,166,0.1)', color: '#5eead4', border: '1px solid rgba(20,184,166,0.22)' }}>
-            <Shield size={12} />
-            4 Roles · Full RBAC · Live Demo
-          </div>
-          <h2 className="text-4xl font-bold text-white font-display mb-4">
-            Explore NAGAR-NETRA's Full Workflow
-          </h2>
-          <p className="text-slate-400 mb-10 text-lg">
-            Try any role — from filing a citizen complaint to closing a case as Administrator
-          </p>
-
-          {/* Demo role cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 stagger-children">
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 8: TRUST / IMPACT STRIP
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="bg-white border-y border-slate-200/90 py-8 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {[
-              { role: 'Citizen',       icon: '👤', color: '#14b8a6', email: 'citizen@demo.com',      desc: 'File & track complaints' },
-              { role: 'Field Officer', icon: '👮', color: '#1d4ed8', email: 'officer@smkc.demo',     desc: 'Inspect & verify cases' },
-              { role: 'Supervisor',    icon: '🏛️', color: '#7c3aed', email: 'supervisor@smkc.demo',  desc: 'Issue notices & assign' },
-              { role: 'Administrator', icon: '⚙️', color: '#dc2626', email: 'admin@smkc.demo',       desc: 'Full system access' },
-            ].map(r => (
-              <div key={r.role}
-                className="rounded-xl p-4 cursor-pointer transition-all duration-300 group hover:scale-[1.03]"
-                style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${r.color}30` }}
-                onClick={() => navigate('/login')}>
-                <div className="text-2xl mb-2">{r.icon}</div>
-                <div className="text-white text-sm font-bold mb-0.5">{r.role}</div>
-                <div className="text-slate-500 text-[10px] font-mono truncate mb-2">{r.email}</div>
-                <div className="text-slate-400 text-xs mb-3">{r.desc}</div>
-                <div className="text-xs font-semibold group-hover:gap-2 flex items-center gap-1 transition-all" style={{ color: r.color }}>
-                  Try this role <ArrowRight size={11} />
+              {
+                title: 'AI-Powered',
+                sub: 'Intelligent evidence analysis',
+                icon: Brain,
+                color: '#0d9488',
+                bgColor: '#f0fdfa'
+              },
+              {
+                title: 'Geo-Tagged',
+                sub: 'Location-aware reporting',
+                icon: MapPin,
+                color: '#0284c7',
+                bgColor: '#f0f9ff'
+              },
+              {
+                title: 'End-to-End',
+                sub: 'Report to resolution',
+                icon: Activity,
+                color: '#7c3aed',
+                bgColor: '#faf5ff'
+              },
+              {
+                title: 'Auditable',
+                sub: 'Every action recorded',
+                icon: ShieldCheck,
+                color: '#16a34a',
+                bgColor: '#f0fdf4'
+              },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-3.5">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: item.bgColor, color: item.color }}>
+                  <item.icon size={20} />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-slate-900 text-sm sm:text-base">
+                    {item.title}
+                  </h3>
+                  <p className="text-slate-500 text-xs sm:text-sm">
+                    {item.sub}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
-
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/citizen/report-new"
-              className="btn btn-lg"
-              style={{ background: 'linear-gradient(135deg,#1d4ed8,#0d9488)', color: 'white' }}>
-              <Camera size={18} /> Report a Violation <ArrowRight size={18} />
-            </Link>
-            <Link to="/login"
-              className="btn btn-lg"
-              style={{ background: 'rgba(255,255,255,0.08)', color: 'white', border: '1px solid rgba(255,255,255,0.15)' }}>
-              Officer / Admin Login
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer style={{ background: '#020810', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        {/* Top row */}
-        <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <SMKCLogo size={32} />
-              <div>
-                <div className="text-white font-bold">NAGAR-NETRA</div>
-                <div className="text-slate-500 text-xs">AI + GIS Civic Enforcement</div>
-              </div>
-            </div>
-            <p className="text-slate-600 text-xs leading-relaxed">
-              A prototype civic enforcement platform for Sangli-Miraj-Kupwad Municipal Corporation.
-              Built to modernize hoarding and encroachment management through AI and digital workflows.
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 9: PROBLEM SECTION (BEFORE VS WITH NAGAR-NETRA)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-slate-50/70 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              The Civic Challenge
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              Civic problems are easy to report.<br />
+              Managing them shouldn't be.
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Traditional municipal reporting suffers from scattered hotlines, unverifiable photos, manual verification backlogs, and untracked enforcement deadlines. NAGAR-NETRA replaces administrative friction with transparent, data-driven execution.
             </p>
           </div>
-          <div>
-            <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Quick Links</div>
-            <div className="space-y-2">
-              {[
-                { label: 'Report a Violation',  to: '/citizen/report-new' },
-                { label: 'Track My Complaint',  to: '/citizen/track' },
-                { label: 'Officer Login',        to: '/login' },
-              ].map(l => (
-                <Link key={l.label} to={l.to}
-                  className="flex items-center gap-2 text-slate-500 text-sm hover:text-teal-400 transition-colors">
-                  <ChevronRight size={13} />
-                  {l.label}
-                </Link>
-              ))}
+
+          {/* Visual Comparison Grid */}
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+            {/* BEFORE Card */}
+            <div className="rounded-2xl bg-white border border-rose-200 p-6 sm:p-8 shadow-xs relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-rose-500" />
+              <div className="flex items-center justify-between mb-6">
+                <span className="font-display font-extrabold text-rose-600 tracking-wider text-sm uppercase">
+                  BEFORE
+                </span>
+                <span className="text-xs font-medium text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">
+                  Fragmented Workflow
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { title: 'Disconnected complaints', desc: 'Reports arrive scattered via calls, letters, paper registries & social media.' },
+                  { title: 'Manual verification', desc: 'Officers travel blindly without verified coordinates, wasting field time.' },
+                  { title: 'Scattered evidence', desc: 'Permit files stored in paper archives; prior spot violations missed.' },
+                  { title: 'Delayed action', desc: 'Unenforced removal orders, compliance deadlines expire without accountability.' },
+                ].map((step, idx) => (
+                  <div key={step.title} className="flex items-start gap-3.5">
+                    <div className="w-7 h-7 rounded-full bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                      ✕
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800 text-sm">{step.title}</h4>
+                      <p className="text-xs text-slate-500 leading-normal">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* WITH NAGAR-NETRA Card */}
+            <div className="rounded-2xl bg-white border border-teal-300 p-6 sm:p-8 shadow-md relative overflow-hidden ring-1 ring-teal-500/20">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-emerald-500" />
+              <div className="flex items-center justify-between mb-6">
+                <span className="font-display font-extrabold text-teal-700 tracking-wider text-sm uppercase">
+                  WITH NAGAR-NETRA
+                </span>
+                <span className="text-xs font-semibold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                  Unified Accountability
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { title: 'One report', desc: 'Unified intake from web and WhatsApp with mandatory citizen identity constraint.' },
+                  { title: 'AI assistance + Geo-tagged evidence', desc: 'YOLOv8 vision detection + OCR with tamper-proof EXIF GPS coordinates.' },
+                  { title: 'Officer verification', desc: 'Human-in-the-loop: Ground-truthing with authorized inspector sign-off.' },
+                  { title: 'Digital notice → Enforcement → Closure', desc: 'Automated legal notice, crew dispatch, and before/after audit trail.' },
+                ].map((step, idx) => (
+                  <div key={step.title} className="flex items-start gap-3.5">
+                    <div className="w-7 h-7 rounded-full bg-teal-100 text-teal-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm">{step.title}</h4>
+                      <p className="text-xs text-slate-600 leading-normal">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 10: CORE SOLUTION SECTION
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Core Architecture
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              One platform. One case.<br />Complete accountability.
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              NAGAR-NETRA turns a citizen report or field observation into a traceable municipal case.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                num: '01',
+                title: 'Report',
+                desc: 'Citizen or field officer submits geotagged photo, description, and contact evidence.',
+                icon: Camera,
+                color: '#0d9488'
+              },
+              {
+                num: '02',
+                title: 'Detect',
+                desc: 'AI identifies potential hoardings and encroachments with bounding-box analysis.',
+                icon: Brain,
+                color: '#2563eb'
+              },
+              {
+                num: '03',
+                title: 'Locate',
+                desc: 'GPS and GIS map the exact location, municipal ward boundaries, and hotspot density.',
+                icon: MapPin,
+                color: '#7c3aed'
+              },
+              {
+                num: '04',
+                title: 'Verify',
+                desc: 'Authorized officers validate the violation through on-site field inspection.',
+                icon: ShieldCheck,
+                color: '#0284c7'
+              },
+              {
+                num: '05',
+                title: 'Act',
+                desc: 'Notices, legal compliance deadlines, and enforcement crew actions are managed digitally.',
+                icon: FileCheck,
+                color: '#d97706'
+              },
+              {
+                num: '06',
+                title: 'Resolve',
+                desc: 'Before/after evidence closes the loop permanently with public notice archives.',
+                icon: CheckCircle,
+                color: '#16a34a'
+              },
+            ].map((card) => (
+              <div
+                key={card.num}
+                className="rounded-2xl p-6 bg-slate-50/80 border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-mono font-bold text-sm text-slate-400 group-hover:text-teal-600 transition-colors">
+                    {card.num}
+                  </span>
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    style={{ background: 'white', color: card.color, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+                    <card.icon size={18} />
+                  </div>
+                </div>
+                <h3 className="font-display font-bold text-lg text-slate-900 mb-2">
+                  {card.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {card.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 11: "HOW IT WORKS" WORKFLOW PIPELINE
+          ═══════════════════════════════════════════════════════════════ */}
+      <section id="how-it-works" className="py-20 lg:py-24 bg-[#0a1628] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1 rounded-full border border-teal-500/30">
+              End-to-End Pipeline
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white mt-3 mb-4">
+              How NAGAR-NETRA Works
+            </h2>
+            <p className="text-slate-300 text-base leading-relaxed">
+              Every complaint follows a structured 7-stage verifiable lifecycle from initial capture to physical resolution.
+            </p>
+          </div>
+
+          {/* Stepper Tabs Bar */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none">
+            {PIPELINE_STEPS.map((step, idx) => (
+              <button
+                key={step.num}
+                onClick={() => setActivePipelineIdx(idx)}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
+                  activePipelineIdx === idx
+                    ? 'bg-teal-500 text-slate-950 shadow-md shadow-teal-500/30'
+                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/60'
+                }`}>
+                <span className="font-mono">{step.num}</span>
+                <span>{step.title}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Active Step Feature Showcase */}
+          <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-700/80 p-6 sm:p-10 shadow-xl">
+            {(() => {
+              const current = PIPELINE_STEPS[activePipelineIdx];
+              const StepIcon = current.icon;
+              return (
+                <div className="grid md:grid-cols-12 gap-8 items-center">
+                  <div className="md:col-span-4 flex flex-col items-start space-y-4">
+                    <div
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+                      style={{ background: current.color, color: 'white' }}>
+                      <StepIcon size={32} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-mono font-bold text-teal-400">
+                        PHASE {current.num} OF 07
+                      </span>
+                      <h3 className="font-display font-extrabold text-2xl text-white mt-1">
+                        {current.title}
+                      </h3>
+                      <p className="text-slate-400 text-xs font-medium">
+                        {current.sub}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-8 space-y-4 border-t md:border-t-0 md:border-l border-slate-800 md:pl-8 pt-4 md:pt-0">
+                    <p className="text-slate-200 text-base sm:text-lg leading-relaxed">
+                      {current.desc}
+                    </p>
+                    <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700 text-xs text-slate-300 flex items-start gap-3">
+                      <Sparkles size={16} className="text-teal-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-white block mb-0.5">Municipal Integrity Guard:</strong>
+                        {current.detail}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 12: AI SECTION ("AI assists the officer. It doesn't replace the officer.")
+          ═══════════════════════════════════════════════════════════════ */}
+      <section id="responsible-ai" className="py-20 lg:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Human-in-the-Loop Vision
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              AI assists the officer.<br />
+              It doesn't replace the officer.
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Automated computer vision performs rapid evidence triage and OCR text extraction, but final legal enforcement decisions are strictly reserved for authorized municipal officers.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+            {/* Left: Uploaded Evidence Photo with Bounding Box Overlay */}
+            <div className="lg:col-span-6">
+              <div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-xl">
+                {/* Photo Simulation */}
+                <div className="h-64 sm:h-72 w-full bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center relative p-6">
+                  {/* Background Mock Hoarding Graphic */}
+                  <div className="w-full max-w-sm h-36 border-2 border-dashed border-slate-600 rounded-lg flex flex-col items-center justify-center p-3 text-center bg-slate-900/60">
+                    <span className="text-3xl mb-1">🏢</span>
+                    <span className="font-display font-bold text-slate-300 text-sm">ABC DEVELOPERS · LUXURY APARTMENTS</span>
+                    <span className="text-xs font-mono text-slate-400">CONTACT: +91 98XXXXXXXX</span>
+                  </div>
+
+                  {/* AI Detection Bounding Box Graphic */}
+                  <div className="absolute inset-8 border-2 border-teal-400 bg-teal-500/10 rounded-md pointer-events-none flex flex-col justify-between p-2">
+                    <div className="flex items-center justify-between">
+                      <span className="bg-teal-500 text-slate-950 font-mono font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                        UNAUTHORIZED_HOARDING · 94%
+                      </span>
+                      <span className="font-mono text-[9px] text-teal-300">
+                        16.8524, 74.5815
+                      </span>
+                    </div>
+                    <div className="self-end bg-slate-900/90 text-amber-300 font-mono text-[9px] px-2 py-0.5 rounded border border-amber-500/40">
+                      OCR: ABC DEVELOPERS
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-slate-950 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>RAW EVIDENCE: IMG_20261004_SMKC.JPG</span>
+                  <span className="text-teal-400 font-mono font-semibold">YOLOv8 + EASYOCR</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: AI Analysis Structured Breakdown */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 shadow-xs space-y-3.5">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Model Inference Breakdown
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-200">
+                    High Confidence: 94%
+                  </span>
+                </div>
+
+                <div className="space-y-2.5 text-sm">
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="text-slate-500">Detected Class:</span>
+                    <span className="font-semibold text-slate-900">Potential Illegal Hoarding</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="text-slate-500">Extracted Advertiser:</span>
+                    <span className="font-mono font-bold text-slate-900">ABC DEVELOPERS</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="text-slate-500">Permit Registry Check:</span>
+                    <span className="font-bold text-rose-600">No Active Permit (Expired 30 Sep)</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="text-slate-500">Risk Assessment:</span>
+                    <span className="font-semibold text-amber-700">High (Footpath Encroachment)</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="text-slate-500">System Recommendation:</span>
+                    <span className="font-semibold text-teal-700">Field Verification Required</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Crucial Responsible AI Disclaimer Box */}
+              <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs flex items-start gap-3">
+                <AlertCircle size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong>Responsible AI Principle:</strong> "AI results are advisory. Final verification is performed by an authorized municipal officer before any legal notice is issued."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 13: GIS SECTION ("See the city as a living map.")
+          ═══════════════════════════════════════════════════════════════ */}
+      <section id="gis-intelligence" className="py-20 lg:py-24 bg-[#070e1a] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">
+              Spatial Intelligence
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white mt-3 mb-4">
+              See the city as a living map.
+            </h2>
+            <p className="text-slate-300 text-base leading-relaxed">
+              Track active violations, examine ward-level density, spot repeat encroachment hotspots, and route field enforcement squads efficiently.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Left 8 Cols: Interactive GIS Canvas */}
+            <div className="lg:col-span-8 rounded-2xl bg-[#0a1628] border border-slate-700 p-5 shadow-2xl space-y-4">
+              {/* Ward Selector Tabs */}
+              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+                <div className="flex gap-2">
+                  {Object.entries(GIS_WARS).map(([key, data]) => (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedWard(key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        selectedWard === key
+                          ? 'bg-teal-500 text-slate-950 font-bold'
+                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      }`}>
+                      {data.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[11px] font-mono text-slate-400">
+                  SMKC BOUNDARY: 16.85° N, 74.58° E
+                </span>
+              </div>
+
+              {/* Map Preview Area */}
+              <div className="relative h-72 sm:h-80 w-full rounded-xl bg-[#060c16] border border-slate-800 overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full opacity-40">
+                  <defs>
+                    <pattern id="gisGrid2" width="24" height="24" patternUnits="userSpaceOnUse">
+                      <circle cx="2" cy="2" r="1" fill="#0d9488" fillOpacity="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#gisGrid2)" />
+                  {/* Stylized road network */}
+                  <path d="M 20,40 L 180,140 L 400,100" stroke="#334155" strokeWidth="2" fill="none" />
+                  <path d="M 80,260 L 220,160 L 320,280" stroke="#334155" strokeWidth="2" fill="none" />
+                </svg>
+
+                {/* Hotspot Pulse Rings */}
+                <div className="absolute top-1/3 left-1/3 w-24 h-24 rounded-full bg-rose-500/10 border border-rose-500/30 animate-pulse pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <span className="text-[9px] font-mono text-rose-300 font-bold">HOTSPOT 1</span>
+                </div>
+
+                {/* Case Pins for Active Ward */}
+                {GIS_WARS[selectedWard].cases.map((c) => (
+                  <div
+                    key={c.id}
+                    style={{ top: c.top, left: c.left }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 p-1 px-2 rounded-md bg-slate-900/90 border border-slate-700 shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
+                    <span className="font-mono text-[10px] text-white font-bold">{c.id}</span>
+                    <span className="text-[9px] text-slate-400">({c.ward})</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1">
+                <span className="text-slate-400">
+                  Live layer view with ward zones and verified GPS points.
+                </span>
+                <button
+                  onClick={() => navigate('/map')}
+                  className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-teal-600 hover:bg-teal-500 flex items-center gap-1.5">
+                  Explore Case Map <ArrowRight size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Right 4 Cols: GIS KPI Intelligence Panel */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-xl space-y-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display font-bold text-white text-base">
+                    GIS Intelligence
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">
+                    Prototype Data
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3.5">
+                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                    <span className="text-[11px] text-slate-400 block">Active Cases</span>
+                    <span className="font-display font-extrabold text-2xl text-white">
+                      {GIS_WARS[selectedWard].active}
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                    <span className="text-[11px] text-slate-400 block">High Priority</span>
+                    <span className="font-display font-extrabold text-2xl text-rose-400">
+                      {GIS_WARS[selectedWard].highPriority}
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                    <span className="text-[11px] text-slate-400 block">Active Hotspots</span>
+                    <span className="font-display font-extrabold text-2xl text-amber-400">
+                      {GIS_WARS[selectedWard].hotspots}
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                    <span className="text-[11px] text-slate-400 block">Resolved Cases</span>
+                    <span className="font-display font-extrabold text-2xl text-emerald-400">
+                      {GIS_WARS[selectedWard].resolved}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-400 leading-relaxed pt-1 border-t border-slate-800">
+                  Data aggregates geo-spatial reports across Sangli, Miraj, and Kupwad municipal divisions for rapid supervisor review.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 14: WHATSAPP SECTION (ZERO-APP CITIZEN REPORTING)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+
+            {/* Left 6 Cols: Explanatory Content */}
+            <div className="lg:col-span-6 space-y-6">
+              <span className="text-xs font-bold uppercase tracking-wider text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                Inclusive Citizen Access
+              </span>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight">
+                Report from WhatsApp.<br />
+                No new app required.
+              </h2>
+              <p className="text-slate-600 text-base leading-relaxed">
+                Citizens can send a photo, location and description through WhatsApp. NAGAR-NETRA converts the conversation into a structured municipal case with automated AI review.
+              </p>
+
+              <div className="space-y-3 pt-2">
+                {[
+                  'Zero app installation required for citizens',
+                  'Instant case ID generated directly in the chat',
+                  'Send GPS pin with native WhatsApp location sharing',
+                  'Track case status anytime by replying STATUS [Case ID]',
+                ].map((pt) => (
+                  <div key={pt} className="flex items-center gap-2.5 text-sm text-slate-700 font-medium">
+                    <CheckCheck size={18} className="text-green-600 flex-shrink-0" />
+                    <span>{pt}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 pt-4">
+                <button
+                  onClick={() => navigate('/whatsapp-simulator')}
+                  className="px-5 py-3 rounded-xl font-bold text-sm text-white bg-[#25d366] hover:bg-[#20ba59] shadow-md shadow-green-900/20 transition-all flex items-center gap-2">
+                  <MessageSquare size={16} /> Try WhatsApp Demo
+                </button>
+                <button
+                  onClick={() => navigate('/track')}
+                  className="px-5 py-3 rounded-xl font-semibold text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all">
+                  Track Existing Case
+                </button>
+              </div>
+
+              <div className="text-xs text-slate-400">
+                * Simulated WhatsApp bot interface for demonstration & evaluation purposes.
+              </div>
+            </div>
+
+            {/* Right 6 Cols: Realistic WhatsApp Mockup Frame */}
+            <div className="lg:col-span-6">
+              <div className="rounded-3xl bg-[#111b21] border border-slate-800 shadow-2xl max-w-sm mx-auto overflow-hidden">
+                {/* WA Top Bar */}
+                <div className="bg-[#1f2c34] p-3.5 flex items-center gap-3 border-b border-slate-800">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-teal-600 to-emerald-600 flex items-center justify-center text-sm font-bold text-white">
+                    🏛️
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white text-sm font-bold truncate">SMKC Nagar-Netra</h4>
+                    <span className="text-[11px] text-green-400 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+                      Official Channel · Demo Mode
+                    </span>
+                  </div>
+                </div>
+
+                {/* WA Chat Log */}
+                <div className="p-4 space-y-3 bg-[#0b141a] text-xs">
+                  {/* Citizen MSG */}
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#005c4b] text-white">
+                      <p>Illegal hoarding erected near Sangli-Miraj Road overbridge.</p>
+                      <span className="text-[9px] text-slate-300 block text-right mt-1">10:14 AM</span>
+                    </div>
+                  </div>
+
+                  {/* Bot MSG */}
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-[#202c33] text-slate-100">
+                      <p>🏛️ Namaste! Please send a clear evidence photo of the violation.</p>
+                      <span className="text-[9px] text-slate-400 block text-right mt-1">10:14 AM</span>
+                    </div>
+                  </div>
+
+                  {/* Citizen MSG: Photo */}
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none p-2 bg-[#005c4b] text-white space-y-1">
+                      <div className="h-20 bg-black/30 rounded-lg flex items-center justify-center text-center">
+                        <div>
+                          <Camera size={20} className="mx-auto text-teal-300 mb-1" />
+                          <span className="text-[10px] text-slate-200">photo_evidence.jpg</span>
+                        </div>
+                      </div>
+                      <span className="text-[9px] text-slate-300 block text-right">10:15 AM</span>
+                    </div>
+                  </div>
+
+                  {/* Bot MSG: Location Request */}
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-none px-3.5 py-2 bg-[#202c33] text-slate-100">
+                      <p>Please share your current GPS location to pin this complaint on our GIS map.</p>
+                      <span className="text-[9px] text-slate-400 block text-right mt-1">10:15 AM</span>
+                    </div>
+                  </div>
+
+                  {/* Citizen MSG: Location */}
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-none px-3.5 py-2 bg-[#005c4b] text-white flex items-center gap-2">
+                      <MapPin size={18} className="text-teal-300 flex-shrink-0" />
+                      <div>
+                        <span className="font-semibold block">Location Shared</span>
+                        <span className="text-[10px] text-teal-200">Sangli-Miraj Road (16.8524°N, 74.5815°E)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bot Confirmation Case Card */}
+                  <div className="flex justify-start">
+                    <div className="max-w-[88%] rounded-2xl rounded-tl-none p-3 bg-[#202c33] text-slate-100 border border-teal-500/30 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-teal-400 font-bold">
+                        <CheckCheck size={14} />
+                        <span>Case Registered Successfully!</span>
+                      </div>
+                      <div className="font-mono text-white text-[11px] bg-slate-900/60 p-1.5 rounded">
+                        <div>CASE ID: <strong>NNT-2026-004271</strong></div>
+                        <div>STATUS: <strong className="text-amber-400">Under Review</strong></div>
+                        <div>AI SCORE: <strong className="text-teal-300">94% Confidence</strong></div>
+                      </div>
+                      <span className="text-[10px] text-slate-400 block">
+                        Reply STATUS NNT-2026-004271 to track updates anytime.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#1f2c34] text-center text-xs text-slate-400">
+                  <button
+                    onClick={() => navigate('/whatsapp-simulator')}
+                    className="text-teal-400 hover:underline font-semibold">
+                    Launch Interactive WhatsApp Simulator →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 15 & 16: CASE LIFECYCLE & BEFORE/AFTER RESOLUTION
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-slate-50/70 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+          {/* Heading */}
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Verified Resolution
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              From reported problem to verified resolution.
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Every complaint leaves an immutable audit trail. Compare the site before and after municipal action.
+            </p>
+          </div>
+
+          {/* Before / After Comparison Showcase */}
+          <div className="max-w-4xl mx-auto rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 flex-wrap gap-3">
+              <div>
+                <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded">
+                  CASE ID: NNT-2026-004271
+                </span>
+                <h3 className="font-display font-bold text-slate-900 text-lg mt-1">
+                  Unauthorized Commercial Billboard Removal
+                </h3>
+                <span className="text-xs text-slate-500">
+                  Location: Sangli-Miraj Road, Near Railway Overbridge
+                </span>
+              </div>
+
+              {/* View Switcher */}
+              <div className="flex bg-slate-100 p-1 rounded-xl">
+                <button
+                  onClick={() => setBeforeAfterMode('before')}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    beforeAfterMode === 'before'
+                      ? 'bg-rose-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}>
+                  BEFORE VIOLATION
+                </button>
+                <button
+                  onClick={() => setBeforeAfterMode('after')}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    beforeAfterMode === 'after'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}>
+                  AFTER REMOVAL ✓
+                </button>
+              </div>
+            </div>
+
+            {/* Visual Box */}
+            <div className="mt-6 rounded-2xl overflow-hidden bg-slate-900 text-white min-h-[260px] flex flex-col justify-between p-6 relative">
+              {beforeAfterMode === 'before' ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/80 text-white">
+                      EVIDENCE PHOTOGRAPH (DAY 01)
+                    </span>
+                    <span className="text-xs font-mono text-slate-400">
+                      GPS: 16.8524° N, 74.5815° E
+                    </span>
+                  </div>
+                  <div className="my-8 text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-rose-950/80 border border-rose-600/60 mx-auto flex items-center justify-center text-3xl mb-3">
+                      🚧
+                    </div>
+                    <h4 className="font-display font-bold text-xl text-white">
+                      Unauthorized 40ft Structural Hoarding Obstructing Pedestrian Walkway
+                    </h4>
+                    <p className="text-sm text-slate-400 mt-1">
+                      No municipal permit issued · Advertiser: ABC Developers · Risk: High
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-rose-300 font-mono border-t border-slate-800 pt-3">
+                    <span>STATUS: FIELD VERIFICATION COMPLETED</span>
+                    <span>ACTION: 48H NOTICE ISSUED</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/80 text-white">
+                      POST-ENFORCEMENT AUDIT (DAY 03)
+                    </span>
+                    <span className="text-xs font-mono text-slate-400">
+                      GPS: 16.8524° N, 74.5815° E
+                    </span>
+                  </div>
+                  <div className="my-8 text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-emerald-950/80 border border-emerald-500/60 mx-auto flex items-center justify-center text-3xl mb-3">
+                      ✅
+                    </div>
+                    <h4 className="font-display font-bold text-xl text-white">
+                      Structure Dismantled & Public Right-of-Way Completely Restored
+                    </h4>
+                    <p className="text-sm text-slate-400 mt-1">
+                      Verified by Field Officer Vijay Kadam · Penalty assessed · Before/After photo approved
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-emerald-300 font-mono border-t border-slate-800 pt-3">
+                    <span>STATUS: RESOLVED & CLOSED</span>
+                    <span>AUDIT: IMMUTABLE ARCHIVE</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="mt-3 text-center text-xs text-slate-400">
+              * Demonstration scenario showcasing closed-loop municipal enforcement.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 17: CENTRAL COMMAND CENTER SECTION
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-[#0a1628] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-5 space-y-6">
+              <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1 rounded-full border border-teal-500/30">
+                Municipal Operations
+              </span>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight">
+                One view for the entire city.
+              </h2>
+              <p className="text-slate-300 text-base leading-relaxed">
+                Supervisors and municipal administrators monitor real-time case triage, field officer workloads, compliance countdowns, and ward hotspot distributions in a unified dashboard.
+              </p>
+
+              <div className="space-y-3">
+                {[
+                  'Real-time case triage across Sangli, Miraj, and Kupwad',
+                  'Automated notice delivery tracking and statutory countdowns',
+                  'Balanced workload distribution among certified field officers',
+                  'Audit log exporter for municipal compliance meetings',
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <CheckCheck size={16} className="text-teal-400 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-teal-600 hover:bg-teal-500 shadow-md shadow-teal-950/40 transition-all flex items-center gap-2">
+                  <Shield size={16} /> Explore SMKC Command Center
+                </button>
+              </div>
+            </div>
+
+            {/* Dashboard UI Mockup Preview */}
+            <div className="lg:col-span-7">
+              <div className="rounded-2xl bg-slate-900 border border-slate-700/80 p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-teal-400" />
+                    <span className="font-mono text-slate-300 font-bold">SMKC CENTRAL DASHBOARD</span>
+                  </div>
+                  <span className="text-slate-400">JURISDICTION: SANGLI-MIRAJ-KUPWAD</span>
+                </div>
+
+                {/* Dashboard Stats Row */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">TOTAL CASES</span>
+                    <span className="font-display font-bold text-xl text-white">18</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">VERIFYING</span>
+                    <span className="font-display font-bold text-xl text-amber-400">7</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">NOTICES ACTIVE</span>
+                    <span className="font-display font-bold text-xl text-rose-400">5</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">RESOLVED</span>
+                    <span className="font-display font-bold text-xl text-emerald-400">42</span>
+                  </div>
+                </div>
+
+                {/* Mini Workload & Recent Cases List */}
+                <div className="space-y-2 text-xs">
+                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                    Recent Verified Enforcement Stream
+                  </span>
+                  {[
+                    { id: 'NNT-4271', issue: 'Illegal Hoarding', ward: 'Sangli', officer: 'Vijay Kadam', status: 'Verification' },
+                    { id: 'NNT-4265', issue: 'Encroachment', ward: 'Kupwad', officer: 'Amol Shinde', status: 'Notice Sent' },
+                    { id: 'NNT-4240', issue: 'Road Obstruction', ward: 'Miraj', officer: 'Priya Sharma', status: 'Dismantled' },
+                  ].map((row) => (
+                    <div key={row.id} className="p-2.5 rounded-lg bg-slate-800/50 flex items-center justify-between text-slate-300">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-teal-400 font-bold">{row.id}</span>
+                        <span>{row.issue} · {row.ward}</span>
+                      </div>
+                      <span className="text-slate-400 font-mono text-[11px]">{row.officer}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 18: ROLE-BASED EXPERIENCE
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Role Specialization
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              One platform. Different experiences.
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Every stakeholder interacts with tailored interfaces designed for their specific civic duty.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                role: 'Citizen',
+                badge: 'Public',
+                desc: 'Report violations in seconds via Web or WhatsApp. Track resolution progress with Case ID or registered mobile.',
+                icon: Users,
+                features: ['Zero App WhatsApp', 'Mobile Tracking', 'SMS Updates'],
+                cta: 'Report / Track',
+                onClick: () => navigate('/report')
+              },
+              {
+                role: 'Field Officer',
+                badge: 'Operations',
+                desc: 'Mobile-first field view for on-site inspection, GIS navigation, camera evidence capture, and ground verification.',
+                icon: Shield,
+                features: ['Turn-by-turn Navigation', 'Offline GPS Capture', 'Verification Logs'],
+                cta: 'Officer Portal',
+                onClick: () => navigate('/login')
+              },
+              {
+                role: 'Supervisor',
+                badge: 'Enforcement',
+                desc: 'Ward-level oversight, officer assignment, legal compliance notices, statutory deadline monitoring, and action approvals.',
+                icon: FileCheck,
+                features: ['Automated Notices', 'Workload Balancing', 'Compliance Clock'],
+                cta: 'Supervisor Portal',
+                onClick: () => navigate('/login')
+              },
+              {
+                role: 'Administrator',
+                badge: 'Governance',
+                desc: 'City-wide spatial analytics, officer accounts, ward zoning boundaries, system integrations, and full audit logs.',
+                icon: Landmark,
+                features: ['GIS Heatmaps', 'Zone Management', 'Audit Trail Export'],
+                cta: 'Admin Console',
+                onClick: () => navigate('/login')
+              },
+            ].map((card) => (
+              <div
+                key={card.role}
+                className="rounded-2xl p-6 bg-slate-50 border border-slate-200 hover:border-teal-500 hover:shadow-md transition-all flex flex-col justify-between group">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white text-teal-600 border border-slate-200 flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                      <card.icon size={20} />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200/80 text-slate-700">
+                      {card.badge}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-slate-900 mb-2">
+                    {card.role}
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
+                    {card.desc}
+                  </p>
+                  <ul className="space-y-1.5 mb-6">
+                    {card.features.map(f => (
+                      <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  onClick={card.onClick}
+                  className="w-full py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:bg-teal-50 hover:border-teal-300 hover:text-teal-800 transition-colors flex items-center justify-center gap-1">
+                  <span>{card.cta}</span>
+                  <ArrowRight size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 19: FEATURE GRID (10 KEY CAPABILITIES)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section id="features" className="py-20 lg:py-24 bg-slate-50/70 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Platform Features
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              Comprehensive Civic Technology
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Engineered specifically for municipal municipal corporations to enforce public rights-of-way and advertisement guidelines.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
+            {[
+              { title: 'AI Detection', desc: 'Identify hoardings & encroachments with bounding box coordinates.', icon: Brain },
+              { title: 'OCR Engine', desc: 'Extract advertiser name, campaign text & contact numbers instantly.', icon: FileText },
+              { title: 'Geo-Tagged Evidence', desc: 'Tamper-evident camera capture with embedded GPS coordinates & time.', icon: Camera },
+              { title: 'GIS Mapping', desc: 'Real-time vector and heatmap visualizations of active complaints.', icon: Layers },
+              { title: 'Permit Verification', desc: 'Automatic cross-check against municipal authorized permit registry.', icon: FileCheck },
+              { title: 'Digital Notices', desc: 'Generate standardized statutory compliance notices with deadlines.', icon: AlertTriangle },
+              { title: 'Enforcement Tracking', desc: 'Log physical removal crew dispatches and penalty assessments.', icon: Zap },
+              { title: 'Historical Intelligence', desc: 'Identify repeat offenders and persistent violation hotspots over time.', icon: TrendingUp },
+              { title: 'Full Audit Trail', desc: 'Immutable records of every user action, status change & timestamp.', icon: ShieldCheck },
+              { title: 'WhatsApp Reporting', desc: 'Zero-friction citizen participation via conversational messaging.', icon: MessageSquare },
+            ].map((feat) => (
+              <div
+                key={feat.title}
+                className="rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 hover:border-teal-400 hover:shadow-xs transition-all">
+                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center mb-3">
+                  <feat.icon size={18} />
+                </div>
+                <h4 className="font-display font-bold text-slate-900 text-sm mb-1.5">
+                  {feat.title}
+                </h4>
+                <p className="text-slate-500 text-xs leading-relaxed">
+                  {feat.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 20 & 21: RESPONSIBLE AI + GEOSPATIAL COMPATIBILITY
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+          {/* Responsible AI 3 Pillars */}
           <div>
-            <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Mandatory Report Fields</div>
-            <div className="space-y-2">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+                Ethical Governance
+              </span>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-3">
+                Technology assists decisions.<br />People remain accountable.
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base">
+                Three foundational principles that govern every algorithm in NAGAR-NETRA.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
-                { icon: Users,      label: 'Full Name (Complainant)' },
-                { icon: Phone,      label: 'Mobile Number (10-digit)' },
-                { icon: Camera,     label: 'Photo/Video Evidence' },
-                { icon: MapPin,     label: 'GPS / Address of Violation' },
-                { icon: AlertCircle, label: 'Violation Type' },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-slate-500 text-xs">
-                  <Icon size={12} className="text-teal-600 flex-shrink-0" />
-                  {label}
+                {
+                  title: 'Human Verification',
+                  desc: 'AI only identifies potential violations. An authorized municipal officer must validate evidence in person before any notice or fine is issued.',
+                  icon: Scale
+                },
+                {
+                  title: 'Evidence First',
+                  desc: 'Every single case is grounded in tamper-evident imagery, EXIF timestamps, and verifiable GPS coordinates that hold up to legal scrutiny.',
+                  icon: Camera
+                },
+                {
+                  title: 'Full Auditability',
+                  desc: 'Every recommendation, edit, and notice is logged permanently with the identity of the responsible officer and exact timestamp.',
+                  icon: ShieldCheck
+                },
+              ].map((pil) => (
+                <div key={pil.title} className="rounded-2xl p-6 bg-slate-50 border border-slate-200">
+                  <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center mb-4">
+                    <pil.icon size={20} />
+                  </div>
+                  <h3 className="font-display font-bold text-slate-900 text-base mb-2">
+                    {pil.title}
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                    {pil.desc}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Bottom row */}
-        <div className="border-t px-6 py-4 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3"
-          style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-          <div className="text-slate-600 text-xs">
-            © 2026 Sangli-Miraj-Kupwad Municipal Corporation · NAGAR-NETRA Prototype
+          {/* Geospatial Compatibility Strip */}
+          <div className="rounded-2xl bg-slate-900 text-white p-6 sm:p-8 max-w-5xl mx-auto text-center space-y-4">
+            <span className="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider">
+              Interoperable Standards
+            </span>
+            <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+              Built for modern geospatial workflows.
+            </h3>
+            <p className="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
+              NAGAR-NETRA coordinates and vector layers are architected for open GIS interchange with state and national mapping infrastructure.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {['Leaflet GIS', 'OpenStreetMap', 'GeoJSON Layers', 'KML / KMZ Export', 'NIC Geo-Portals', 'ESRI Shapefiles'].map(std => (
+                <span key={std} className="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-mono text-slate-300 border border-slate-700">
+                  {std}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold"
-            style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.18)', padding: '4px 12px', borderRadius: 999 }}>
-            ⚠️ Prototype v1.0 — Demo Data Only · Not official SMKC data
+
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 22: QUALITATIVE IMPACT SECTION
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-slate-50/70 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+              Civic Outcomes
+            </span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 mt-3 mb-4">
+              Measurable Civic Impact
+            </h2>
+            <p className="text-slate-600 text-base leading-relaxed">
+              Transforming urban governance through transparency, faster field cycles, and cleaner public rights-of-way.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {[
+              {
+                title: 'Faster Reporting',
+                desc: 'Structured intakes from Web and WhatsApp in under 60 seconds with auto location capture.',
+                icon: Zap
+              },
+              {
+                title: 'Better Verification',
+                desc: 'AI-assisted OCR and hazard classification give field officers instant context before arrival.',
+                icon: Brain
+              },
+              {
+                title: 'Greater Visibility',
+                desc: 'Unified GIS map view across Sangli, Miraj, and Kupwad exposes repeat hotspots effortlessly.',
+                icon: Eye
+              },
+              {
+                title: 'Faster Enforcement',
+                desc: 'Digital legal notices with strict compliance countdowns expedite physical removal squads.',
+                icon: Activity
+              },
+              {
+                title: 'Stronger Accountability',
+                desc: 'Complete end-to-end audit logs build trust between citizens and municipal authorities.',
+                icon: ShieldCheck
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl p-6 bg-white border border-slate-200 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center mb-4">
+                  <item.icon size={20} />
+                </div>
+                <h4 className="font-display font-bold text-slate-900 text-base mb-2">
+                  {item.title}
+                </h4>
+                <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 23: STRONG CALL TO ACTION (DEEP NAVY FOOTER HERO)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-gradient-to-b from-[#0a1628] to-[#060c16] text-white text-center relative overflow-hidden">
+        {/* Background Radial Glow */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-20"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(13,148,136,0.4) 0%, transparent 60%)',
+          }}
+        />
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-400 bg-teal-950/80 px-3 py-1.5 rounded-full border border-teal-500/30">
+            Citizen & Municipal Participation
+          </span>
+
+          <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-white tracking-tight">
+            See a problem?<br />
+            Help SMKC resolve it.
+          </h2>
+
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+            Report suspected illegal hoardings and public-space encroachments with photo evidence and location. Together, let's keep Sangli, Miraj, and Kupwad safe and organized.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+            <button
+              onClick={() => navigate('/report')}
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-xl shadow-teal-950/50 transition-all flex items-center justify-center gap-2">
+              <Camera size={16} /> Report a Violation
+            </button>
+            <button
+              onClick={() => navigate('/whatsapp-simulator')}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-green-300 bg-green-950/70 hover:bg-green-900/80 border border-green-700/60 transition-all flex items-center justify-center gap-2">
+              <MessageSquare size={16} className="text-green-400" /> Report via WhatsApp
+            </button>
+            <button
+              onClick={() => navigate('/track')}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all flex items-center justify-center gap-2">
+              <Search size={16} className="text-teal-400" /> Track Complaint
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 24: FOOTER (OFFICIAL BRANDING & DISCLOSURE)
+          ═══════════════════════════════════════════════════════════════ */}
+      <footer id="about" className="bg-[#050a12] text-slate-400 border-t border-slate-800 text-xs py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-slate-800/80">
+
+            {/* Left 2 Cols: Brand info */}
+            <div className="col-span-2 space-y-3">
+              <div className="flex items-center gap-3">
+                <SMKCLogo size={36} />
+                <div>
+                  <span className="font-display font-extrabold text-white text-base tracking-tight block">
+                    NAGAR-NETRA
+                  </span>
+                  <span className="text-[11px] text-teal-400">
+                    Network for Evidence, Tracking, Reporting & Action
+                  </span>
+                </div>
+              </div>
+              <p className="text-slate-400 text-xs leading-relaxed max-w-sm pt-1">
+                An advanced AI and GIS civic intelligence platform designed for Sangli-Miraj-Kupwad Municipal Corporation (SMKC) to detect, verify, and resolve public rights-of-way violations.
+              </p>
+              <div className="text-[11px] text-slate-500 font-mono pt-1">
+                🏛️ Sangli-Miraj-Kupwad Municipal Corporation (SMKC)
+              </div>
+            </div>
+
+            {/* Navigation links */}
+            <div className="space-y-2.5">
+              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Platform</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
+                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                <li><button onClick={() => navigate('/map')} className="hover:text-white transition-colors text-left">GIS Intelligence Map</button></li>
+                <li><a href="#responsible-ai" className="hover:text-white transition-colors">Responsible AI</a></li>
+              </ul>
+            </div>
+
+            {/* Citizen actions */}
+            <div className="space-y-2.5">
+              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Citizen Services</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><button onClick={() => navigate('/report')} className="hover:text-white transition-colors text-left">Report Violation</button></li>
+                <li><button onClick={() => navigate('/track')} className="hover:text-white transition-colors text-left">Track Complaint</button></li>
+                <li><button onClick={() => navigate('/whatsapp-simulator')} className="hover:text-white transition-colors text-left">WhatsApp Simulator</button></li>
+                <li><button onClick={() => navigate('/login')} className="hover:text-white transition-colors text-left">Officer Login</button></li>
+              </ul>
+            </div>
+
+            {/* Legal / Authority */}
+            <div className="space-y-2.5">
+              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Transparency</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><span className="text-slate-500">Citizen Privacy Policy</span></li>
+                <li><span className="text-slate-500">Terms of Enforcement</span></li>
+                <li><span className="text-slate-500">Open Data Guidelines</span></li>
+                <li><span className="text-slate-500">Maharashtra Municipal Act</span></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom disclaimer bar */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+            <div>
+              © 2026 NAGAR-NETRA. Sangli-Miraj-Kupwad Municipal Corporation (SMKC).
+            </div>
+            <div className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-amber-400 font-mono text-[10px]">
+              PROTOTYPE / DEMONSTRATION PLATFORM FOR SMKC
+            </div>
           </div>
         </div>
       </footer>
