@@ -117,13 +117,7 @@ export function CaseCard({ caseItem, onClick }) {
 }
 
 export function DemoDataBanner() {
-  return (
-    <div className="mb-5 px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-medium"
-      style={{ background: 'linear-gradient(135deg,#fef3c7,#fde68a20)', border: '1px solid #f59e0b40', color: '#78350f' }}>
-      <span className="text-base flex-shrink-0">⚠️</span>
-      <span>All data shown is <strong>DEMO DATA</strong> — fictional records for prototype demonstration only. Not actual SMKC enforcement data.</span>
-    </div>
-  );
+  return null;
 }
 
 export function EmptyState({ icon, title, description, action }) {

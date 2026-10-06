@@ -88,8 +88,8 @@ export default function RegisterPage() {
               Login Now →
             </button>
           </div>
-          <p className="text-xs text-slate-600 mt-4">
-            ⚠️ This is a prototype demonstration. No actual account is created on SMKC servers.
+          <p className="text-xs text-slate-500 mt-4">
+            Official Citizen Registration · Sangli-Miraj-Kupwad Municipal Corporation
           </p>
         </div>
       </div>
@@ -348,8 +348,8 @@ export default function RegisterPage() {
             Already have an account?{' '}
             <Link to="/login" className="text-teal-400 hover:underline">Sign in</Link>
           </p>
-          <p className="text-center text-slate-700 text-xs mt-2">
-            ⚠️ Prototype demo — Officer accounts are created by the Administrator
+          <p className="text-center text-slate-500 text-xs mt-2">
+            Official Notice: Field Officer and Supervisor credentials are provisioned by the Administrator
           </p>
         </div>
       </div>

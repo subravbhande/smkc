@@ -282,7 +282,7 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-          <div className="text-xs text-slate-400 text-center mt-4">Active cases · Prototype Analytics</div>
+          <div className="text-xs text-slate-400 text-center mt-4">Active cases · Geospatial Surveillance Feed</div>
         </div>
       </div>
 

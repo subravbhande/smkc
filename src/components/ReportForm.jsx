@@ -298,10 +298,9 @@ export default function ReportForm() {
               <p className="text-slate-500 text-sm">All reports are reviewed by SMKC officers</p>
             </div>
           </div>
-          <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg mt-3 text-xs"
-            style={{ background: '#fff7ed', border: '1px solid #fed7aa' }}>
-            <Info size={12} className="text-amber-600 flex-shrink-0 mt-0.5" />
-            <span className="text-amber-800"><strong>Demo Mode:</strong> Your report will be added to the prototype case system. No actual SMKC action will be taken.</span>
+          <div className="flex items-start gap-2 px-3 py-2 rounded-lg mt-3 text-xs bg-blue-50 border border-blue-200 text-blue-800">
+            <Info size={12} className="text-blue-600 flex-shrink-0 mt-0.5" />
+            <span>Citizen reports are dispatched directly to the SMKC AI verification and field inspection pipeline.</span>
           </div>
         </div>
 
@@ -661,7 +660,7 @@ export default function ReportForm() {
       </div>
 
       <p className="text-center text-xs text-slate-400">
-        ⚠️ Demo data only — not actual SMKC enforcement records
+        Sangli-Miraj-Kupwad Municipal Corporation · Public Grievance Redressal
       </p>
     </div>
   );

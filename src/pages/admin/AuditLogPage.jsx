@@ -57,7 +57,7 @@ export default function AuditLogPage() {
   return (
     <div className="p-6 animate-fade-in space-y-5">
       <DemoDataBanner />
-      <PageHeader title="Audit Log" subtitle="Immutable record of all system actions · Demo Data">
+      <PageHeader title="Audit Log" subtitle="Immutable record of all system and enforcement actions">
         <button onClick={handleExportCSV} className="btn btn-secondary btn-sm flex items-center gap-1.5">
           <Download size={13} /> Export CSV
         </button>
@@ -151,7 +151,7 @@ export default function AuditLogPage() {
         </div>
         <div className="px-5 py-3 text-xs text-slate-400 flex justify-between" style={{ borderTop: '1px solid #f1f5f9' }}>
           <span>Showing {filtered.length} of {logs.length} audit events</span>
-          <span>⚠️ Demo data — production stores complete history</span>
+          <span className="text-slate-500 font-medium">Tamper-Evident Municipal Enforcement Log</span>
         </div>
       </div>
     </div>

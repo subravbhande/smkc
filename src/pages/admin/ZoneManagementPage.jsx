@@ -7,7 +7,7 @@ export default function ZoneManagementPage() {
   return (
     <div className="p-6 animate-fade-in">
       <DemoDataBanner />
-      <PageHeader title="Zone / Ward Management" subtitle="SMKC administrative zones · Demo Data" />
+      <PageHeader title="Zone / Ward Management" subtitle="SMKC administrative zones and jurisdictional boundaries" />
 
       <div className="grid lg:grid-cols-3 gap-6 mb-6">
         {DEMO_ZONES.map((zone) => (

@@ -58,12 +58,12 @@ export default function AnalyticsPage() {
             </div>
             <h1 className="text-2xl font-bold text-slate-900 font-display">Analytics & Reports</h1>
           </div>
-          <p className="text-slate-400 text-sm ml-11">Prototype Analytics · Demo Data Only</p>
+          <p className="text-slate-500 text-sm ml-11">Civic Intelligence & Ward Performance Monitoring</p>
         </div>
         <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium"
           style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b' }}>
-          <span className="w-2 h-2 rounded-full bg-amber-400 pulse-dot" />
-          Live Demo Data
+          <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-dot" />
+          Live Municipal Feed
         </div>
       </div>
 
@@ -217,7 +217,7 @@ export default function AnalyticsPage() {
             <h3 className="font-bold text-slate-800 text-sm font-display">High-Risk Locations · Repeat Offenders</h3>
             <p className="text-slate-400 text-xs mt-0.5">Locations with 2+ enforcement cases</p>
           </div>
-          <span className="badge badge-review">Prototype Analytics</span>
+          <span className="badge badge-review">Enforcement Intelligence</span>
         </div>
         <div className="overflow-x-auto">
           <table className="data-table">

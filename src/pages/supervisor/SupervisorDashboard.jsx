@@ -48,7 +48,7 @@ export default function SupervisorDashboard() {
             <h1 className="text-2xl font-bold text-slate-900 font-display">Supervisor Dashboard</h1>
           </div>
           <p className="text-slate-400 text-sm ml-11">
-            {user?.name} · {user?.zone || 'Sangli'} Zone · Prototype Analytics
+            {user?.name} · {user?.zone || 'Sangli'} Zone · Municipal Enforcement Unit
           </p>
         </div>
         <button

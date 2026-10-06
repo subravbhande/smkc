@@ -192,14 +192,6 @@ export default function AppLayout({ children }) {
             {!compact && <span className="text-sm font-medium">Logout</span>}
           </button>
         </div>
-        {!compact && (
-          <div className="px-4 pb-4">
-            <div className="text-center py-1.5 rounded-lg text-xs font-bold tracking-wide"
-              style={{ background: 'rgba(245,158,11,0.1)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.2)' }}>
-              ⚠ DEMO MODE
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

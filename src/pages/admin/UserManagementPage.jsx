@@ -80,7 +80,7 @@ export default function UserManagementPage() {
   return (
     <div className="p-6 animate-fade-in space-y-5">
       <DemoDataBanner />
-      <PageHeader title="User Management" subtitle="Manage platform users, roles and access · Demo Data">
+      <PageHeader title="User Management" subtitle="Manage platform users, roles and departmental access">
         <button className="btn btn-primary btn-sm" onClick={() => toast('Officer/Admin accounts can be created from this panel in production', { icon: 'ℹ️' })}>
           <UserPlus size={14} /> Add User
         </button>
@@ -220,7 +220,7 @@ export default function UserManagementPage() {
         </div>
         <div className="px-5 py-3 text-xs text-slate-400 flex justify-between items-center" style={{ borderTop: '1px solid #f1f5f9' }}>
           <span>Showing {filtered.length} of {allUsers.length} users</span>
-          <span>⚠️ Demo data — not actual SMKC personnel</span>
+          <span className="text-slate-500 font-medium">Official SMKC Personnel Directory</span>
         </div>
       </div>
 

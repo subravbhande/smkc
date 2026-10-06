@@ -306,7 +306,7 @@ export default function CaseListPage({ role = 'admin' }) {
         <div className="px-5 py-3 flex items-center justify-between text-xs text-slate-500"
           style={{ borderTop: '1px solid #f1f5f9', background: '#fafafa' }}>
           <span>
-            Showing <span className="font-semibold text-slate-700">{cases.length}</span> cases · Demo Data
+            Showing <span className="font-semibold text-slate-700">{cases.length}</span> active records
           </span>
           {hasActiveFilters && (
             <button

@@ -44,7 +44,7 @@ function StatusBadge({ connected }) {
   return (
     <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${connected ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
       <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-amber-400'}`} />
-      {connected ? 'Connected' : 'Demo Mode'}
+      {connected ? 'Connected' : 'Active (Local)'}
     </span>
   );
 }
@@ -63,7 +63,7 @@ export default function IntegrationsPage() {
   return (
     <div className="p-6 animate-fade-in space-y-6">
       <DemoDataBanner />
-      <PageHeader title="Integrations" subtitle="Platform integrations and API configuration · Demo Mode" />
+      <PageHeader title="Integrations" subtitle="Platform integrations and API service endpoints" />
 
       {/* ── WhatsApp Section ── */}
       <section>
@@ -107,8 +107,8 @@ export default function IntegrationsPage() {
               style={{ background: '#fff7ed', border: '1px solid #fed7aa' }}>
               <AlertTriangle size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-amber-800">
-                <strong>Demo Mode Active.</strong> To connect real WhatsApp Business API, configure the environment variables below and restart the server.
-                WhatsApp Business API is available through Meta for Business at <strong>business.facebook.com</strong>.
+                <strong>Production Gateway Setup:</strong> Connect to WhatsApp Business API with the meta parameters below.
+                WhatsApp Business API credentials are generated via Meta for Business at <strong>business.facebook.com</strong>.
               </p>
             </div>
 

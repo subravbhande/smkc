@@ -344,7 +344,7 @@ export default function WhatsAppSimulatorPage() {
         style={{ background: 'linear-gradient(135deg,#dcfce7,#bbf7d0)', border: '1px solid #86efac' }}>
         <Wifi size={16} className="text-green-700 flex-shrink-0 mt-0.5" />
         <div>
-          <div className="text-green-900 font-semibold text-sm">WhatsApp Integration — Demo Mode</div>
+          <div className="text-green-900 font-semibold text-sm">WhatsApp Integration — SMKC Grievance Bot</div>
           <div className="text-green-700 text-xs mt-0.5">
             Reports created here enter the <strong>same NAGAR-NETRA case pipeline</strong> as web reports. Source is tagged as "WhatsApp".
             Cases appear in the Admin dashboard with the WhatsApp filter.
@@ -365,7 +365,7 @@ export default function WhatsAppSimulatorPage() {
                 <div className="text-white text-sm font-semibold truncate">{WA_NUMBER}</div>
                 <div className="text-xs flex items-center gap-1" style={{ color: '#00a884' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                  Online · Demo Mode
+                  Online · SMKC Official Bot
                 </div>
               </div>
               <div className="flex items-center gap-3 text-slate-400">
@@ -396,7 +396,7 @@ export default function WhatsAppSimulatorPage() {
               {/* System info bubble */}
               <div className="flex justify-center mb-3">
                 <div className="px-3 py-2 rounded-xl text-xs text-center max-w-xs" style={{ background: '#1f2c34', color: '#8696a0' }}>
-                  🔒 Messages to SMKC Nagar-Netra are end-to-end encrypted. <strong className="text-green-400">DEMO MODE ACTIVE</strong>
+                  🔒 Messages to SMKC Nagar-Netra are end-to-end encrypted. <strong className="text-green-400">OFFICIAL CIVIC CHANNEL</strong>
                 </div>
               </div>
 

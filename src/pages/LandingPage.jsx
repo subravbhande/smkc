@@ -1166,7 +1166,7 @@ export default function LandingPage() {
                     <h4 className="text-white text-sm font-bold truncate">SMKC Nagar-Netra</h4>
                     <span className="text-[11px] text-green-400 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                      Official Channel · Demo Mode
+                      Official Channel · Active Bot
                     </span>
                   </div>
                 </div>

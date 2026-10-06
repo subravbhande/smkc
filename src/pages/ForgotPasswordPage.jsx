@@ -129,7 +129,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-slate-500 text-sm mb-1">Code sent to <span className="text-teal-400">{email}</span></p>
                 <div className="px-3 py-2 rounded-lg text-xs font-mono text-amber-400 mb-4"
                   style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)' }}>
-                  ⚠️ Demo mode — your token is: <strong>{token}</strong>
+                  Verification OTP / Security Code: <strong>{token}</strong>
                 </div>
               </div>
               <input

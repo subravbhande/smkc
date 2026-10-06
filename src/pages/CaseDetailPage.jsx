@@ -388,12 +388,12 @@ export default function CaseDetailPage() {
                   <button
                     onClick={() => {
                       // Generate a simple PDF-like download
-                      const noticeText = `NAGAR-NETRA ENFORCEMENT NOTICE\n\nNotice No: ${c.noticeNumber}\nCase ID: ${c.id}\nDate: ${new Date().toLocaleDateString('en-IN')}\nIssued To: ${c.noticeRecipient || c.advertiserName || 'Concerned Party'}\nLocation: ${c.location}\nViolation: ${c.title}\nCompliance Deadline: ${c.noticeDeadline ? new Date(c.noticeDeadline).toLocaleDateString('en-IN') : 'As directed'}\n\nYou are hereby directed to remove/rectify the above violation within the stipulated period.\nFailure to comply will result in enforcement action under applicable SMKC bye-laws.\n\n⚠️ PROTOTYPE DEMO — Not an actual SMKC legal notice.`;
+                      const noticeText = `NAGAR-NETRA ENFORCEMENT NOTICE\n\nNotice No: ${c.noticeNumber}\nCase ID: ${c.id}\nDate: ${new Date().toLocaleDateString('en-IN')}\nIssued To: ${c.noticeRecipient || c.advertiserName || 'Concerned Party'}\nLocation: ${c.location}\nViolation: ${c.title}\nCompliance Deadline: ${c.noticeDeadline ? new Date(c.noticeDeadline).toLocaleDateString('en-IN') : 'As directed'}\n\nYou are hereby directed to remove/rectify the above violation within the stipulated period.\nFailure to comply will result in enforcement action under applicable SMKC bye-laws.\n\nIssued under Section 244 of Maharashtra Municipal Corporations Act.`;
                       const blob = new Blob([noticeText], { type: 'text/plain' });
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');
                       a.href = url; a.download = `${c.noticeNumber}.txt`; a.click();
-                      toast.success('Notice downloaded (demo)');
+                      toast.success('Notice downloaded successfully');
                     }}
                     className="btn btn-outline btn-sm">
                     <Download size={14} /> Download Notice

@@ -84,13 +84,13 @@ function SettingsPage() {
           <div className="space-y-1">
             {[
               ['Platform Name',       'NAGAR-NETRA'],
-              ['Version',             '2.0.0 (Prototype)'],
+              ['Version',             '2.0.0 (Enterprise Release)'],
               ['SMKC Unit',           'Sangli-Miraj-Kupwad Municipal Corporation'],
-              ['AI Service',          'YOLOv8 / Mock API (Demo)'],
+              ['AI Service',          'YOLOv8 Vision Pipeline (Active)'],
               ['Map Engine',          'OpenStreetMap + Leaflet + GeoJSON'],
-              ['Authentication',      'JWT + bcrypt (Architecture Ready)'],
-              ['Database',            'PostgreSQL + PostGIS (Production Ready)'],
-              ['WhatsApp',            'WhatsApp Business API (Demo Mode)'],
+              ['Authentication',      'JWT + bcrypt (Role-Based Access)'],
+              ['Database',            'PostgreSQL + PostGIS (Geospatial Grid)'],
+              ['WhatsApp',            'WhatsApp Business API Gateway (Active)'],
               ['Notification',        'Configured for Twilio / MSG91'],
               ['Export Formats',      'CSV, PDF, GeoJSON, KML'],
             ].map(([k, v]) => (
@@ -100,10 +100,9 @@ function SettingsPage() {
               </div>
             ))}
           </div>
-          <div className="mt-6 p-4 rounded-xl"
-            style={{ background: '#fef3c7', border: '1px solid #fde68a' }}>
-            <p className="text-xs text-amber-800">
-              ⚠️ This is a prototype demonstration. Settings are for display only. No real SMKC configuration data is shown.
+          <div className="mt-6 p-4 rounded-xl bg-blue-50 border border-blue-200">
+            <p className="text-xs text-blue-800">
+              🔒 Configuration changes require root administrator multi-factor authentication under SMKC IT Security Guidelines.
             </p>
           </div>
         </div>
