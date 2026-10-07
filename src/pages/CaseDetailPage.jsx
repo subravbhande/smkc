@@ -66,7 +66,11 @@ export default function CaseDetailPage() {
 
   const canEdit = user?.role !== 'Citizen';
   const isSupervisorOrAdmin = user?.role === 'Supervisor' || user?.role === 'Administrator';
-  const tabs = ['overview', 'evidence', 'ai-analysis', 'verification', 'notice', 'action', 'timeline', 'map'];
+  // Positive whitelist: only explicitly authorized roles see AI data
+  const isOfficerOrAbove = ['Field Officer', 'Supervisor', 'Administrator'].includes(user?.role);
+  const allTabs = ['overview', 'evidence', 'ai-analysis', 'verification', 'notice', 'action', 'timeline', 'map'];
+  // Citizens cannot see the AI Analysis tab
+  const tabs = allTabs.filter(tab => tab !== 'ai-analysis' || isOfficerOrAbove);
 
   const handleStatusUpdate = () => {
     updateCaseStatus(c.id, newStatus, statusComment, user?.name || 'Officer');
@@ -140,7 +144,7 @@ export default function CaseDetailPage() {
                 <span className="font-mono font-bold text-xl text-blue-700">{c.id}</span>
                 <StatusBadge status={c.status} />
                 <PriorityBadge priority={c.priority} />
-                {c.aiConfidence > 0 && <AIBadge confidence={c.aiConfidence} decision={c.aiDecision} />}
+                {c.aiConfidence > 0 && isOfficerOrAbove && <AIBadge confidence={c.aiConfidence} decision={c.aiDecision} />}
                 {c.source && (
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                     style={{ background: c.source === 'WhatsApp' ? '#dcfce7' : '#dbeafe', color: c.source === 'WhatsApp' ? '#16a34a' : '#1d4ed8' }}>
@@ -300,8 +304,8 @@ export default function CaseDetailPage() {
           </div>
         )}
 
-        {/* AI ANALYSIS */}
-        {activeTab === 'ai-analysis' && (
+        {/* AI ANALYSIS — visible to officers/admin only */}
+        {activeTab === 'ai-analysis' && isOfficerOrAbove && (
           <div className="max-w-2xl space-y-4">
             <div className="card p-6">
               <div className="flex items-center gap-3 mb-6">

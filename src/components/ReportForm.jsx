@@ -103,11 +103,17 @@ function FilePreview({ file, onRemove }) {
   );
 }
 
+// Roles that are allowed to see AI analysis results
+const OFFICER_ROLES = ['Field Officer', 'Supervisor', 'Administrator'];
+
 export default function ReportForm() {
   const { user } = useAuthStore();
   const { addCase } = useCasesStore();
   const { addNotification } = useNotifStore();
   const navigate = useNavigate();
+
+  // true only for logged-in officers/supervisors/admins — citizens and guests see no AI data
+  const canViewAI = OFFICER_ROLES.includes(user?.role);
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -536,11 +542,12 @@ export default function ReportForm() {
           <div className="text-xs text-blue-500 font-semibold mb-1 uppercase tracking-widest">Case ID</div>
           <div className="text-3xl font-bold font-mono text-blue-800">{caseId}</div>
         </div>
-        <div className="grid grid-cols-3 gap-3 text-center mt-2">
+        <div className={`grid gap-3 text-center mt-2 ${canViewAI ? 'grid-cols-3' : 'grid-cols-2'}`}>
           {[
             { label: 'Status', value: 'Under Review', color: '#f59e0b' },
             { label: 'Evidence', value: `${files.length || 0} file(s)`, color: '#1d4ed8' },
-            { label: 'AI Confidence', value: `${aiResult?.confidence || 0}%`, color: '#7c3aed' },
+            // AI Confidence — officers/supervisors/admins only
+            ...(canViewAI ? [{ label: 'AI Confidence', value: `${aiResult?.confidence || 0}%`, color: '#7c3aed' }] : []),
           ].map(item => (
             <div key={item.label} className="p-3 rounded-xl bg-slate-50">
               <div className="text-xs text-slate-400 mb-0.5">{item.label}</div>
@@ -550,8 +557,8 @@ export default function ReportForm() {
         </div>
       </div>
 
-      {/* AI Analysis */}
-      {aiResult && (
+      {/* AI Analysis — officers / supervisors / admins only; citizens & guests never see this */}
+      {aiResult && canViewAI && (
         <div className="card p-6">
           <div className="flex items-center gap-3 mb-5">
             <span className="text-2xl">🤖</span>
